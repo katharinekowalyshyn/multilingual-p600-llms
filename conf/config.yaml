@@ -1,0 +1,8 @@
+languages:
+  - English
+  - Spanish
+  - German
+num_sentences: 5
+llm:
+  model: "gpt-3.5-turbo"
+output_file: "gardenpath_dataset.csv" 
