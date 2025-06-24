@@ -9,6 +9,8 @@ This project is designed to generate and evaluate multilingual garden path sente
 - Modular, experiment-friendly codebase using Hydra for configuration
 - LLM output management with [dspy](https://github.com/stanfordnlp/dspy)
 - Utility functions for experiment pipelines
+- Progress bar for dataset generation
+- Ensures unique garden path sentences per language
 
 ## Setup
 
@@ -20,7 +22,7 @@ This project is designed to generate and evaluate multilingual garden path sente
    ```
 3. **Install dependencies**
    ```bash
-   pip install hydra-core dspy-ai pandas
+   pip install hydra-core dspy-ai pandas tqdm
    ```
 4. **Set your OpenAI API key**
    ```bash
@@ -28,24 +30,28 @@ This project is designed to generate and evaluate multilingual garden path sente
    ```
 
 ## Configuration
-Edit `conf/config.yaml` to set:
+Edit `src/conf/config.yaml` to set:
 - `languages`: List of languages to generate sentences in
-- `num_sentences`: Number of sentences per language
+- `num_sentences`: Number of unique sentences per language
 - `llm.model`: OpenAI model to use (e.g., `gpt-3.5-turbo`)
-- `output_file`: Name of the output CSV file
+- `prompt_files`: Mapping of language to prompt file (relative to `src/`)
 
 ## Usage
-To generate a dataset:
+To generate a dataset, run from the project root or `src/` directory:
 ```bash
-python generate_dataset.py
+cd multilingual-gardenpath-llms
+python src/dataset_generation/generate_dataset.py
 ```
-The output CSV will be saved in a Hydra-generated output directory, with columns for `language` and `sentence`.
+The output CSV will be saved as `src/dataset_generation/multillingual_dataset.csv`, with columns for `language` and `sentence`.
+
+- Each language will have the number of unique sentences specified in the config.
+- A progress bar will show generation progress for each language.
 
 ## Utilities
-- Common helper functions are in `utils.py` (e.g., for saving DataFrames).
+- Common helper functions are in `src/utils.py` (e.g., for saving DataFrames).
 
 ## Extending the Project
-- Add new utility functions to `utils.py` as needed.
+- Add new utility functions to `src/utils.py` as needed.
 - The second part of the project (LLM evaluation) will be implemented in future scripts.
 
 ## License

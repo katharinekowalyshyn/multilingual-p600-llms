@@ -134,13 +134,13 @@ hydra:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /Users/katiekowalyshyn/Documents/Tufts/Tufts GitHub/multilingual-gardenpath-llms/src/conf
+    - path: /Users/katiekowalyshyn/Documents/Tufts/Tufts GitHub/multilingual-gardenpath-llms/src/dataset_generation/../conf
       schema: file
       provider: main
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /Users/katiekowalyshyn/Documents/Tufts/Tufts GitHub/multilingual-gardenpath-llms/outputs/2025-06-24/10-46-37
+    output_dir: /Users/katiekowalyshyn/Documents/Tufts/Tufts GitHub/multilingual-gardenpath-llms/outputs/2025-06-24/11-36-32
     choices:
       hydra/env: default
       hydra/callbacks: null

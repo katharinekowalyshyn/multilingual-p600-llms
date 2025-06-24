@@ -1,1 +1,0 @@
-Erzeuge einen Garden-Path-Satz in {language}. Ein Garden-Path-Satz ist ein grammatikalisch korrekter Satz, der so beginnt, dass die wahrscheinlichste Interpretation des Lesers falsch ist; der Leser wird auf den 'Holzweg' geführt. Gib nur den Satz an. 
