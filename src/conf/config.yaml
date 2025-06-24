@@ -1,0 +1,12 @@
+languages:
+  - English
+  - Español
+  - Deutsch
+num_sentences: 5
+llm:
+  model: "gpt-4o-mini"
+output_file: "gardenpath_dataset.csv"
+prompt_files:
+  English: "prompts/english_gardenpath_prompt.txt"
+  Español: "prompts/espanol_gardenpath_prompt.txt"
+  Deutsch: "prompts/deutsch_gardenpath_prompt.txt" 

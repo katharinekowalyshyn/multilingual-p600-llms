@@ -1,0 +1,33 @@
+Ein Garden-Path-Satz (wörtlich: „Gartenweg-Satz“) ist ein grammatikalisch korrekter Satz, der den Leser oder Hörer zunächst zu einer falschen Interpretation verleitet und eine erneute Analyse erforderlich macht, sobald aufklärende Informationen folgen.
+
+In linguistischer Hinsicht nutzt ein Garden-Path-Satz temporäre syntaktische Mehrdeutigkeiten aus – insbesondere in der Art und Weise, wie Verben, Subjekte und Objekte beim Lesen in Echtzeit verarbeitet werden. Unser Gehirn konstruiert eine Bedeutung, während wir das Satzmaterial von links nach rechts aufnehmen, und legt sich dabei früh auf eine bestimmte syntaktische Struktur fest. Der Garden-Path-Effekt tritt auf, wenn sich diese frühe Analyse als falsch herausstellt und eine Umstrukturierung nötig wird.
+
+Detailliertes Beispiel:
+
+„Das Pferd getrieben an der Scheune stürzte.“
+
+Erste (falsche) Analyse:
+	•	„Das Pferd getrieben an der Scheune“ → wird als vollständiger Hauptsatz interpretiert
+	•	„Das Pferd“: Subjekt
+	•	„getrieben“: als finites Verb (Präteritum) missverstanden
+	•	„an der Scheune“: Präpositionalphrase
+	•	Der Parser nimmt an, dass der Satz hier zu Ende ist
+
+Disambiguierendes Wort:
+	•	„stürzte“: erzwingt eine Neubewertung – nun muss „getrieben“ als Partizip Perfekt in einem verkürzten Relativsatz gelesen werden
+	•	„Das Pferd [das an der Scheune getrieben wurde] stürzte.“
+
+Korrekte Struktur:
+	•	„getrieben“ ist kein finites Verb, sondern ein Partizip, das „Pferd“ näher bestimmt
+	•	„stürzte“ ist das Hauptverb
+	•	Satzstruktur:
+	•	Subjekt: Das Pferd [das an der Scheune getrieben wurde]
+	•	Verb: stürzte
+
+Linguistische Interaktion:
+	•	Verben legen fest, wie viele Argumente (z. B. Subjekt, Objekt) sie benötigen und welche syntaktischen Formen zulässig sind (z. B. transitiv, intransitiv, partizipial).
+	•	Garden-Path-Sätze führen den Parser in die Irre, indem sie mehrdeutige Verbformen verwenden (z. B. „getrieben“ kann Präteritum oder Partizip sein).
+	•	Der Parser weist syntaktische Rollen falsch zu, z. B. wird ein Verb als finites Verb interpretiert, obwohl es Teil eines Modifikators ist.
+	•	Eine Reanalyse wird notwendig, wenn die Verbsubkategorisierung oder Kasuszuweisung nicht mit den Erwartungen übereinstimmt.
+
+Erzeuge einen eigenen Garden-Path-Satz mit diesen Eigenschaften.

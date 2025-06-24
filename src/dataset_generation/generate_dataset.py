@@ -4,14 +4,20 @@ import dspy
 import pandas as pd
 import os
 from hydra.core.hydra_config import HydraConfig
-from utils import save_dataframe_to_csv
+from src.utils import save_dataframe_to_csv
 
-def generate_garden_path_sentence(language, llm):
-    prompt = f"Generate a garden path sentence in {language}. A garden path sentence is a grammatically correct sentence that starts in such a way that a reader's most likely interpretation will be incorrect; the reader is led down the 'garden path.' Provide only the sentence."
+def generate_garden_path_sentence(language, llm, cfg):
+    # Require a prompt file for each language; raise an error if missing
+    if language not in cfg.prompt_files:
+        raise ValueError(f"No prompt file specified for language '{language}'. Please add it to the config under 'prompt_files'.")
+    prompt_file = cfg.prompt_files[language]
+    with open(prompt_file, "r", encoding="utf-8") as f:
+        prompt_template = f.read()
+    prompt = prompt_template.format(language=language)
     response = llm(prompt)
     return response
 
-@hydra.main(config_path="conf", config_name="config", version_base=None)
+@hydra.main(config_path="../conf", config_name="config", version_base=None)
 def main(cfg: DictConfig):
     # Set up LLM
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -23,7 +29,7 @@ def main(cfg: DictConfig):
     data = []
     for language in cfg.languages:
         for _ in range(cfg.num_sentences):
-            sentence = generate_garden_path_sentence(language, lm)
+            sentence = generate_garden_path_sentence(language, lm, cfg)
             data.append({
                 "language": language,
                 "sentence": sentence
@@ -32,7 +38,7 @@ def main(cfg: DictConfig):
     # Save to CSV
     output_dir = HydraConfig.get().runtime.output_dir
     os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, cfg.output_file)
+    output_path = os.path.join(output_dir, "dataset_generation", cfg.output_file)
     save_dataframe_to_csv(pd.DataFrame(data), output_path)
     print(f"Dataset saved to {output_path}")
 

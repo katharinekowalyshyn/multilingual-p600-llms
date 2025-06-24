@@ -1,0 +1,1 @@
+Genera una oración de jardín en {language}. Una oración de jardín es una oración gramaticalmente correcta que comienza de tal manera que la interpretación más probable del lector será incorrecta; el lector es llevado por el 'camino del jardín'. Proporciona solo la oración. 
