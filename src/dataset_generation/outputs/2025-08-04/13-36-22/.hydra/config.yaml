@@ -1,0 +1,16 @@
+languages:
+- English
+- Español
+- Deutsch
+num_sentences: 5
+bilingual_languages:
+- - English
+  - Español
+llm:
+  model: gpt-4o-mini
+output_file: bilingual_gardenpath_dataset.csv
+prompt_files:
+  English: prompts/english_gardenpath_prompt.txt
+  Español: prompts/espanol_gardenpath_prompt.txt
+  Deutsch: prompts/deutsch_gardenpath_prompt.txt
+  code_switch_prompt: prompts/code_switch_prompt.txt

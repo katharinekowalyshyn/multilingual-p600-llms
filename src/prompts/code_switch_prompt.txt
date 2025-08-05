@@ -1,0 +1,32 @@
+Generate a code-switched garden path sentence mixing {language1} and {language2}.
+
+Here are examples of what I want:
+
+Example 1: "The caballo raced past the granero cayó"
+- Initially reads as: "The horse raced past the barn" (seems complete)
+- Then "fell" forces reanalysis: "The horse [that was raced past the barn] fell"
+
+Example 2: "The viejo man the barco"
+- Initially reads as: "The old man" (seems like subject)
+- Then "the boat" forces reanalysis: "The old [people] man the boat"
+
+Here’s a code-switched garden path sentence that creates real syntactic ambiguity:
+
+While Juan sang la canción was out of tune.
+
+Why this is a garden path sentence:
+	1.	Initial parse:
+	•	The reader initially interprets Juan sang la canción as a complete clause meaning “Juan sang the song.”
+	2.	Problem:
+	•	When encountering was out of tune, the reader realizes that la canción is actually the subject of was out of tune and not the direct object of sang.
+	3.	Reanalysis required:
+	•	The correct parse is: While Juan sang, la canción was out of tune.
+
+The code-switching makes the garden path effect more pronounced for bilingual readers because it increases processing load, which delays the disambiguation.
+
+Create a similar sentence that:
+1. Starts in {language1} with a phrase that seems complete
+2. Switches to {language2} with words that force reanalysis
+3. Makes the reader initially misinterpret the beginning
+
+Output only the sentence.
