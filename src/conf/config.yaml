@@ -10,6 +10,7 @@ bilingual_languages:
 
 llm:
   model: "gpt-4o"
+  
 output_file: "bilingual_gardenpath_dataset.csv"
 
 prompt_files:
@@ -17,3 +18,13 @@ prompt_files:
   Español: "prompts/espanol_gardenpath_prompt.txt"
   Deutsch: "prompts/deutsch_gardenpath_prompt.txt" 
   code_switch_prompt: "prompts/code_switch_prompt.txt"
+
+# P600 sentence processing configuration
+p600_processing:
+  enabled: true
+  input_files:
+    gardenpath: "p600 sentences/gardenpath_sample.csv"
+    control_gardenpath: "p600 sentences/control_gardenpath_sample.csv"
+    p600: "p600 sentences/p600_sample.csv"
+  output_dir: "p600 sentences/results"
+  prompt: "Determine if the following sentence is grammatically correct. Respond with only '1' for grammatical or '0' for non-grammatical. Sentence: {sentence}"
