@@ -1,25 +1,31 @@
-languages:
-  - English
-  - Español
-  - Deutsch
-num_sentences: 5
+gardenpath_generation:
+  enabled: true
+  languages:
+    - English
+    - Español
+    - Deutsch
+  num_sentences: 10
+  output_file: "multilingual_gardenpath_dataset.csv"
 
-bilingual_languages:
-  - [English, Español]
-  #- [English, Deutsch]
+codeswitch_generation:
+  enabled: true
+  bilingual_languages:
+    - [English, Español]
+    - [English, Deutsch]
+    - [Español, Deutsch]
+  num_sentences: 10
+  output_file: "codeswitch_gardenpath_dataset.csv"
 
-llm:
-  model: "gpt-4o-mini"
-  
-output_file: "bilingual_gardenpath_dataset.csv"
+p600_generation:
+  enabled: true
+  prompt_file: "prompts/p600_generation_prompt.txt"
+  languages:
+    - English
+    - Español
+    - Deutsch
+  num_sentences_per_language: 10
+  output_file: "p600_generated_sentences.csv"
 
-prompt_files:
-  English: "prompts/english_gardenpath_prompt.txt"
-  Español: "prompts/espanol_gardenpath_prompt.txt"
-  Deutsch: "prompts/deutsch_gardenpath_prompt.txt" 
-  code_switch_prompt: "prompts/code_switch_prompt.txt"
-
-# P600 sentence processing configuration
 p600_processing:
   enabled: true
   prompt_file: "prompts/p600_prompt.txt"
@@ -28,8 +34,15 @@ p600_processing:
     control_gardenpath: "p600 sentences/control_gardenpath_sample.csv"
     p600: "p600 sentences/p600_sample.csv"
   output_dir: "p600 sentences/results"
-
-  #test mode lets you run against a single file and only N rows - useful for debugging
   test_mode: false
   test_file_key: gardenpath  # one of: gardenpath, control_gardenpath, p600
   test_n: 3
+
+llm:
+  model: "gpt-4o-mini"
+
+prompt_files:
+  English: "prompts/english_gardenpath_prompt.txt"
+  Español: "prompts/espanol_gardenpath_prompt.txt"
+  Deutsch: "prompts/deutsch_gardenpath_prompt.txt" 
+  code_switch_prompt: "prompts/code_switch_prompt.txt"

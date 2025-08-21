@@ -1,0 +1,17 @@
+Generate a P600 sentence in {language} that contains a grammatical error that would trigger a P600 ERP response.
+
+P600 sentences typically contain:
+- Subject-verb agreement violations (e.g., "The dogs barks loudly")
+- Tense inconsistencies (e.g., "Yesterday he walks to the store")
+- Number agreement errors (e.g., "The group of boys are playing")
+- Article-noun mismatches (e.g., "Der Mann sah den Frau")
+- Word order violations in non-English languages
+- Morphological errors (e.g., "La niña bonito juega")
+
+The sentence should:
+- Be grammatically incorrect in a way that native speakers would immediately detect
+- Sound natural enough that the error isn't obvious until the reader processes the full sentence
+- Be appropriate for linguistic research and ERP studies
+- Be written in {language}
+
+Generate only the sentence, no explanations or additional text.

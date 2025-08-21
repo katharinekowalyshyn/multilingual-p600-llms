@@ -1,0 +1,29 @@
+language,sentence,error_type
+English,The team of researchers are presenting their findings at the conference.,subject-verb agreement
+English,The group of students were excited about their upcoming trip.,subject-verb agreement
+English,The committee have made their decision regarding the new policy.,subject-verb agreement
+English,The flock of birds are flying south for the winter.,subject-verb agreement
+English,The pack of wolves were howling at the moon last night.,subject-verb agreement
+English,The family of cats are playing in the garden.,subject-verb agreement
+English,The herd of elephants was wandering through the savannahs together.,number agreement error
+English,The collection of books were placed on the shelf yesterday.,subject-verb agreement
+English,The group of friends was planning their vacation for next summer.,subject-verb agreement
+English,The bunch of flowers were blooming beautifully in the garden.,subject-verb agreement
+Español,La niña bonita juegan en el parque.,subject-verb agreement
+Español,La casa grande son muy bonita.,subject-verb agreement
+Español,Los niños juega en la escuela.,subject-verb agreement
+Español,Las flores hermosas crece en el jardín.,subject-verb agreement
+Español,El perro y la gata corre rápido por el jardín.,subject-verb agreement
+Español,Las chicas bonita baila en la fiesta.,subject-verb agreement
+Español,El niño alto y la niña bonita juega en el parque.,subject-verb agreement
+Español,Las flores hermosas crecen en el jardín de la casa.,number agreement error
+Español,El grupo de estudiantes son muy inteligente.,subject-verb agreement
+Español,La niña y el niño juega en el parque.,subject-verb agreement
+Deutsch,Die Katze und der Hund spielt im Garten.,subject-verb agreement
+Deutsch,Die Frau gehen zum Markt.,subject-verb agreement
+Deutsch,Die Kinder spielt im Park.,subject-verb agreement
+Deutsch,Die Mädchen spielt im Zimmer.,subject-verb agreement
+Deutsch,Der Junge und die Mädchen spielt im Park.,subject-verb agreement
+Deutsch,Die Frau und der Mann geht ins Kino.,subject-verb agreement
+Deutsch,Die Katze und der Hund spielen im Garten.,subject-verb agreement
+Deutsch,Die Frau und der Mann spielt im Restaurant.,subject-verb agreement
