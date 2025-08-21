@@ -1,3 +1,29 @@
+"""
+Created: 2025-08-21
+
+P600 sentence grammaticality processing.
+
+This Hydra-driven script classifies sentences in the configured P600 CSVs as
+grammatical (1) or non-grammatical (0) using DSPy with the LLM specified in
+`cfg.llm.model`.
+
+Key behavior:
+- Reads input CSVs from `cfg.p600_processing.input_files` (each must include a
+  `sentence` column).
+- Uses `cfg.llm.model`; API key is auto-detected based on provider. For OpenAI
+  models (`gpt*` or `openai*`), reads `OPENAI_API_KEY` if present.
+- Produces per-file outputs under `cfg.p600_processing.output_dir/<file_key>/`
+  containing an added `grammaticality` column (1 or 0).
+- Logs failures and tracks "false negatives" where outputs default to 0 due to
+  invalid LLM responses or API errors; saves per-file failure logs and an
+  overall failure summary.
+- Mirrors the structure and Hydra integration patterns of
+  `src/dataset_generation/generate_dataset.py`.
+
+Run from the project (Hydra) context, e.g.:
+    python src/p600 sentences/p600.py
+"""
+
 import hydra
 from omegaconf import DictConfig
 import dspy
@@ -7,7 +33,7 @@ import sys
 from hydra.core.hydra_config import HydraConfig
 from tqdm import tqdm
 import re
-from utils import save_dataframe_to_csv
+from src.utils import save_dataframe_to_csv
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
@@ -50,38 +76,60 @@ def process_sentences_for_grammaticality(csv_file_path, llm, cfg):
     grammaticality_predict = dspy.Predict(GrammaticalitySignature)
     
     grammaticality_scores = []
+    # If test_mode and test_n are set, optionally truncate the DataFrame
+    if getattr(cfg.p600_processing, 'test_mode', False) and getattr(cfg.p600_processing, 'test_n', 0):
+        df = df.head(int(cfg.p600_processing.test_n))
+
     with tqdm(total=len(df), desc="Processing sentences", unit="sent") as pbar:
         for idx, row in df.iterrows():
             sentence = row['sentence']
-            prompt = cfg.p600_processing.prompt.format(sentence=sentence)
+            # Load prompt: prefer file if configured
+            prompt_text = None
+            if hasattr(cfg.p600_processing, 'prompt_file') and cfg.p600_processing.prompt_file:
+                try:
+                    prompt_path = os.path.join(SRC_DIR, cfg.p600_processing.prompt_file)
+                    with open(prompt_path, 'r', encoding='utf-8') as pf:
+                        prompt_text = pf.read()
+                except Exception as _:
+                    print(f"Error: Failed to load prompt from {cfg.p600_processing.prompt_file}")
+                    break
+            if not prompt_text:
+                print(f"Error: No prompt file found in {cfg.p600_processing.prompt_file}")
+                break
+
+            prompt = prompt_text.format(sentence=sentence)
             
-            try:
-                result = grammaticality_predict(sentence=sentence, instruction=prompt)
-                score = result.grammaticality.strip()
-                
-                if score not in ['0', '1']:
-                    print(f"Warning: Invalid output '{score}' for sentence '{sentence[:50]}...'. Defaulting to '0'")
-                    score = '0'
-                    failure_stats['invalid_outputs'] += 1
+            if getattr(cfg.p600_processing, 'skip_llm', False):
+                # In skip mode, assign a deterministic placeholder (e.g., 0) without API usage
+                grammaticality_scores.append(0)
+            else:
+                try:
+                    result = grammaticality_predict(sentence=sentence, instruction=prompt)
+                    score = result.grammaticality.strip()
+                    
+                    if score not in ['0', '1']:
+                        print(f"Warning: Invalid output '{score}' for sentence '{sentence[:50]}...'. Defaulting to '0'")
+                        score = '0'
+                        failure_stats['invalid_outputs'] += 1
+                        failure_stats['failed_sentences'].append({
+                            'index': idx,
+                            'sentence': sentence,
+                            'error_type': 'invalid_output',
+                            'llm_output': result.grammaticality.strip()
+                        })
+                    
+                    grammaticality_scores.append(int(score))
+                    
+                except Exception as e:
+                    print(f"Error processing sentence '{sentence[:50]}...': {e}. Defaulting to '0'")
+                    grammaticality_scores.append(0)
+                    failure_stats['api_errors'] += 1
                     failure_stats['failed_sentences'].append({
                         'index': idx,
                         'sentence': sentence,
-                        'error_type': 'invalid_output',
-                        'llm_output': result.grammaticality.strip()
+                        'error_type': 'api_error',
+                        'error_message': str(e)
                     })
-                
-                grammaticality_scores.append(int(score))
-                
-            except Exception as e:
-                print(f"Error processing sentence '{sentence[:50]}...': {e}. Defaulting to '0'")
-                grammaticality_scores.append(0)
-                failure_stats['api_errors'] += 1
-                failure_stats['failed_sentences'].append({
-                    'index': idx,
-                    'sentence': sentence,
-                    'error_type': 'api_error',
-                    'error_message': str(e)
-                })
             
             pbar.update(1)
     
@@ -99,39 +147,46 @@ def process_all_p600_files(cfg):
     Args:
         cfg: Configuration object
     """
-    # Set up LLM with automatic API key detection
-    model = cfg.llm.model
+    # LLM setup (skipped when skip_llm=true)
+    lm = None
+    if not getattr(cfg.p600_processing, 'skip_llm', False):
+        model = cfg.llm.model
+        if model.startswith(('gpt', 'openai')):
+            api_key = os.environ.get("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY environment variable not set. Please set it in your bash profile or session.")
+            if model.startswith('openai/'):
+                model = model[8:]
+            dspy_model = f"openai/{model}"
+        else:
+            api_key = os.environ.get("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("No API key found. Set OPENAI_API_KEY environment variable.")
+            dspy_model = f"openai/{model}"
+        print(f"Using model: {model}")
+        lm = dspy.LM(dspy_model, api_key=api_key)
+        dspy.configure(lm=lm)
     
-    # Automatically detect API key based on model type
-    if model.startswith(('gpt-', 'openai/')):
-        # OpenAI models
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY environment variable not set. Please set it in your bash profile or session.")
-        # Remove 'openai/' prefix if present for DSPY
-        if model.startswith('openai/'):
-            model = model[8:]  # Remove 'openai/' prefix
-        dspy_model = f"openai/{model}"
+    # Base output directory (for overall summary)
+    base_output_dir = os.path.join(SRC_DIR, cfg.p600_processing.output_dir)
+    os.makedirs(base_output_dir, exist_ok=True)
+    
+    # Per-file specific output directories
+    output_dirs = {}
+    for file_type, file_path in cfg.p600_processing.input_files.items():
+        # Use the input file's base name (without extension) for output file naming
+        input_base = os.path.splitext(os.path.basename(file_path))[0]
+        print("Input base: ", input_base)
+        specific_output_dir = os.path.join(SRC_DIR, cfg.p600_processing.output_dir, file_type)
+        os.makedirs(specific_output_dir, exist_ok=True)
+        output_dirs[file_path] = (specific_output_dir, input_base)
+    
+    # Select files: all or only the test file
+    if getattr(cfg.p600_processing, 'test_mode', False):
+        key = cfg.p600_processing.test_file_key
+        input_files = {key: cfg.p600_processing.input_files[key]}
     else:
-        # For other model providers, you can extend this logic
-        # For now, we'll use a generic approach
-        api_key = os.environ.get("NEURONPEDIA_API_KEY") or os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("No API key found. Set either NEURONPEDIA_API_KEY or OPENAI_API_KEY environment variable.")
-        dspy_model = f"openai/{model}"  # Default to OpenAI format
-    
-    print(f"Using model: {model}")
-    print(f"API key type: {'OpenAI' if model.startswith(('gpt-', 'openai/')) else 'Other'}")
-    
-    lm = dspy.LM(dspy_model, api_key=api_key)
-    dspy.configure(lm=lm)
-    
-    # Create output directory
-    output_dir = os.path.join(SRC_DIR, cfg.p600_processing.output_dir)
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Process each input file
-    input_files = cfg.p600_processing.input_files
+        input_files = cfg.p600_processing.input_files
     
     # Track overall failure statistics
     overall_failure_stats = {
@@ -155,9 +210,10 @@ def process_all_p600_files(cfg):
         result_df, failure_stats = process_sentences_for_grammaticality(full_input_path, lm, cfg)
         
         if result_df is not None:
-            # Generate output filename
-            output_filename = f"{file_type}_grammaticality_results.csv"
-            output_path = os.path.join(output_dir, output_filename)
+            # Resolve specific output dir and filename
+            specific_output_dir, input_base = output_dirs[file_path]
+            output_filename = f"{input_base}_grammaticality_results.csv"
+            output_path = os.path.join(specific_output_dir, output_filename)
             
             # Save results
             save_dataframe_to_csv(result_df, output_path)
@@ -194,8 +250,8 @@ def process_all_p600_files(cfg):
             
             # Save detailed failure log if there were failures
             if failure_stats['total_failures'] > 0:
-                failure_log_filename = f"{file_type}_failure_log.csv"
-                failure_log_path = os.path.join(output_dir, failure_log_filename)
+                failure_log_filename = f"{input_base}_failure_log.csv"
+                failure_log_path = os.path.join(specific_output_dir, failure_log_filename)
                 
                 failure_df = pd.DataFrame(failure_stats['failed_sentences'])
                 save_dataframe_to_csv(failure_df, failure_log_path)
@@ -220,7 +276,7 @@ def process_all_p600_files(cfg):
         
         # Save overall failure summary
         summary_filename = "overall_failure_summary.csv"
-        summary_path = os.path.join(output_dir, summary_filename)
+        summary_path = os.path.join(base_output_dir, summary_filename)
         
         summary_data = {
             'metric': ['total_files_processed', 'total_sentences_processed', 'total_failures', 
@@ -267,7 +323,7 @@ def main(cfg: DictConfig):
     try:
         process_all_p600_files(cfg)
         print("\n" + "="*50)
-        print("P600 sentence processing completed successfully!")
+        #print("P600 sentence processing completed successfully!")
         print("="*50)
     except Exception as e:
         print(f"Error during processing: {e}")

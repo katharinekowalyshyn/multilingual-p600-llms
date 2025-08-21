@@ -1,0 +1,26 @@
+language,sentence,grammaticality
+English,The horse raced past the barn fell.,0
+English,The old man the boats.,1
+English,The man who hunts ducks out on weekends.,1
+English,The cotton clothing is made of grows in Mississippi.,0
+English,The florist sent the flowers was pleased.,0
+English,Fat people eat accumulates.,0
+English,The girl told the story cried.,0
+English,The dog chased the cat meowed.,0
+English,The raft floated down the river sank.,0
+English,The boy convinced the girl studied hard.,0
+English,The man whistling tunes pianos.,0
+English,The man who the woman loved kissed died.,0
+English,The author the critics praised won the award.,0
+English,The cheese the mouse the cat chased ate was moldy.,1
+English,The girl knew the answer was wrong.,1
+English,The coach knew the players would lose disappointed the fans.,0
+English,The detective examined by the reporter fainted.,0
+English,The defendant examined by the lawyer fainted.,1
+English,The witness said the defendant lied was nervous.,0
+English,The journalist interviewed the actor was famous.,0
+English,The scientist proved the theory was false.,1
+English,The teacher said the student cheated was expelled.,0
+English,The doctor said the patient recovered was happy.,0
+English,The dog found in the park was hungry.,1
+English,The player tossed the ball missed the catch,0

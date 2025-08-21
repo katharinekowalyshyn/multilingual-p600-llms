@@ -1,0 +1,174 @@
+[2025-08-21 10:42:12,079][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:14,353][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:14,377][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:14,377][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:14,378][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:14,379][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:14,386][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:15,424][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:15,427][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:15,427][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:15,427][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:15,428][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:15,430][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:16,722][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:16,731][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:16,731][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:16,731][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:16,732][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:16,733][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:18,259][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:18,266][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:18,267][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:18,267][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:18,269][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:18,273][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:19,635][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:19,636][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:19,636][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:19,636][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:19,638][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:20,342][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:20,358][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:20,359][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:20,359][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:20,359][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:20,362][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:20,862][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:20,864][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:20,864][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:20,864][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:20,866][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:20,869][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:21,476][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:21,479][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:21,479][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:21,479][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:21,480][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:21,482][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:23,080][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:23,092][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:23,093][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:23,093][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:23,095][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:23,099][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:24,242][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:24,245][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:24,245][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:24,245][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:24,246][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:24,250][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:24,959][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:24,962][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:24,963][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:24,963][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:24,964][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:24,969][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:26,032][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:26,041][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:26,041][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:26,042][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:26,043][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:26,046][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:26,682][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:26,688][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:26,688][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:26,689][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:26,690][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:26,694][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:27,518][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:27,519][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:27,519][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:27,519][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:27,520][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:27,522][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:28,121][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:28,122][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:28,122][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:28,122][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:28,123][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:28,126][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:28,692][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:28,696][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:28,696][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:28,697][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:28,699][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:28,704][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:29,464][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:29,466][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:29,467][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:29,467][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:29,468][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:29,472][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:30,079][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:30,082][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:30,083][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:30,083][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:30,085][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:30,088][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:31,014][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:31,018][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:31,018][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:31,018][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:31,020][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:31,023][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:31,966][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:31,974][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:31,975][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:31,975][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:31,976][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:31,979][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:32,740][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:32,741][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:32,741][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:32,741][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:32,742][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:32,744][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:33,560][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:33,563][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:33,563][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:33,563][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:33,564][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:33,576][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:34,197][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:34,210][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:34,210][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:34,211][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:34,212][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:34,216][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:35,471][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:35,494][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:35,494][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:35,494][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:35,495][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:35,496][LiteLLM][INFO] - 
+LiteLLM completion() model= gpt-4o; provider = openai
+[2025-08-21 10:42:36,039][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2025-08-21 10:42:36,052][LiteLLM][INFO] - Wrapper: Completed Call, calling success_handler
+[2025-08-21 10:42:36,053][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:36,053][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06
+[2025-08-21 10:42:36,054][LiteLLM][INFO] - selected model name for cost calculation: openai/gpt-4o-2024-08-06

@@ -1,0 +1,28 @@
+languages:
+- English
+- Español
+- Deutsch
+num_sentences: 5
+bilingual_languages:
+- - English
+  - Español
+llm:
+  model: gpt-4o-mini
+output_file: bilingual_gardenpath_dataset.csv
+prompt_files:
+  English: prompts/english_gardenpath_prompt.txt
+  Español: prompts/espanol_gardenpath_prompt.txt
+  Deutsch: prompts/deutsch_gardenpath_prompt.txt
+  code_switch_prompt: prompts/code_switch_prompt.txt
+p600_processing:
+  enabled: true
+  input_files:
+    gardenpath: p600 sentences/gardenpath_sample.csv
+    control_gardenpath: p600 sentences/control_gardenpath_sample.csv
+    p600: p600 sentences/p600_sample.csv
+  output_dir: p600 sentences/results
+  test_mode: true
+  test_file_key: gardenpath
+  test_n: 3
+  prompt: 'Determine if the following sentence is grammatically correct. Respond with
+    only ''1'' for grammatical or ''0'' for non-grammatical. Sentence: {sentence}'

@@ -9,7 +9,7 @@ bilingual_languages:
   #- [English, Deutsch]
 
 llm:
-  model: "gpt-4o"
+  model: "gpt-4o-mini"
   
 output_file: "bilingual_gardenpath_dataset.csv"
 
@@ -22,9 +22,14 @@ prompt_files:
 # P600 sentence processing configuration
 p600_processing:
   enabled: true
+  prompt_file: "prompts/p600_prompt.txt"
   input_files:
     gardenpath: "p600 sentences/gardenpath_sample.csv"
     control_gardenpath: "p600 sentences/control_gardenpath_sample.csv"
     p600: "p600 sentences/p600_sample.csv"
   output_dir: "p600 sentences/results"
-  prompt: "Determine if the following sentence is grammatically correct. Respond with only '1' for grammatical or '0' for non-grammatical. Sentence: {sentence}"
+
+  #test mode lets you run against a single file and only N rows - useful for debugging
+  test_mode: false
+  test_file_key: gardenpath  # one of: gardenpath, control_gardenpath, p600
+  test_n: 3
