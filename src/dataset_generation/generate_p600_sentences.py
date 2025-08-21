@@ -8,8 +8,21 @@ Key Features:
 - Generates P600 sentences in multiple languages (English, Español, Deutsch)
 - Creates sentences with specific grammatical violations (subject-verb agreement, tense errors, etc.)
 - Uses DSPy to ensure unique sentence generation and avoid repetition
+- Ensures equal distribution of different error types for each language
 - Integrates with Hydra configuration system for easy customization
 - Progress tracking with tqdm for long generation runs
+
+Equal Distribution Feature:
+This script ensures that each language gets an equal number of sentences for each P600 error type:
+- Morphological errors (e.g., gender agreement, tense consistency)
+- Semantic reversal anomalies (e.g., agent-patient role reversals)
+- Article-noun mismatches (e.g., case agreement errors)
+- Word order violations (e.g., structural grammar errors)
+
+For example, if you request 10 sentences per language, you'll get:
+- 2-3 sentences of each error type per language
+- Any remainder sentences are distributed evenly across the first few error types
+- This ensures balanced datasets for linguistic research and ERP studies
 
 P600 Sentences:
 These are sentences containing grammatical errors that native speakers immediately detect,
@@ -35,8 +48,10 @@ Output:
 - CSV file with columns: language, sentence, error_type
 - Each sentence contains a grammatical error appropriate for P600 studies
 - Sentences are unique within each language and across runs
+- Equal distribution of error types for each language
 
 Created: 2025-08-21
+Updated: 2025-01-XX - Added equal distribution of error types
 """
 
 import hydra
@@ -55,15 +70,24 @@ SRC_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
 
-def generate_p600_sentences(language, llm, cfg, n):
+# Define the P600 error types that we want to generate
+P600_ERROR_TYPES = [
+    "morphological_error",
+    "semantic_reversal_anomaly", 
+    "article_noun_mismatch",
+    "word_order_violation"
+]
+
+def generate_p600_sentences_for_error_type(language, error_type, llm, cfg, n_per_type):
     """
-    Generate P600 sentences for a specific language.
+    Generate P600 sentences for a specific language and error type.
     
     Args:
         language (str): Language to generate sentences in
+        error_type (str): Specific type of grammatical error to generate
         llm: The configured LLM
         cfg: Configuration object
-        n (int): Number of sentences to generate
+        n_per_type (int): Number of sentences to generate for this error type
     
     Returns:
         list: List of dictionaries with sentence and error_type information
@@ -78,50 +102,110 @@ def generate_p600_sentences(language, llm, cfg, n):
     except FileNotFoundError:
         raise ValueError(f"P600 generation prompt file not found: {prompt_file}")
 
-    # Use dspy Predict module to enforce unique P600 sentence generation
-    class P600Signature(dspy.Signature):
-        """Generate a unique P600 sentence with grammatical error."""
-        instruction: str = dspy.InputField()
-        previous_sentences: str = dspy.InputField(desc="A list of sentences to avoid repeating.")
-        sentence: str = dspy.OutputField(desc="A single, unique P600 sentence with a grammatical error.")
-        error_type: str = dspy.OutputField(desc="Brief description of the grammatical error (e.g., 'subject-verb agreement', 'tense error')")
+    # Create a specialized prompt for the specific error type
+    error_type_prompt = f"""Generate {n_per_type} unique P600 sentences in {language} that specifically contain a {error_type.replace('_', ' ')}.
 
-    p600_predict = dspy.Predict(P600Signature)
+Focus on creating sentences with this specific grammatical error:
+- {error_type.replace('_', ' ').title()}
+
+The sentences should:
+- Be grammatically incorrect in a way that native speakers would immediately detect
+- Sound natural enough that the error isn't obvious until the reader processes the full sentence
+- Be appropriate for linguistic research and ERP studies
+- Be written in {language}
+- Each sentence must be unique and different from the others
+
+Generate exactly {n_per_type} sentences, one per line."""
+
+    # Use dspy Predict module to enforce unique P600 sentence generation for specific error type
+    class P600ErrorTypeSignature(dspy.Signature):
+        """Generate unique P600 sentences with a specific grammatical error type."""
+        instruction: str = dspy.InputField()
+        sentences: str = dspy.OutputField(desc=f"Exactly {n_per_type} unique P600 sentences with {error_type.replace('_', ' ')} errors, one per line")
+
+    p600_predict = dspy.Predict(P600ErrorTypeSignature)
     unique_sentences = set()
-    max_attempts = n * 5  # avoid infinite loops if LLM repeats
+    max_attempts = n_per_type * 3  # Allow some retries
     attempts = 0
     
     sentences_data = []
     
-    with tqdm(total=n, desc=f"{language} P600 sentences", unit="sent") as pbar:
-        while len(unique_sentences) < n and attempts < max_attempts:
-            avoid = "\n".join(unique_sentences) if unique_sentences else ""
-            prompt = prompt_template.format(language=language)
-            
+    with tqdm(total=n_per_type, desc=f"{language} {error_type}", unit="sent") as pbar:
+        while len(unique_sentences) < n_per_type and attempts < max_attempts:
             try:
-                result = p600_predict(instruction=prompt, previous_sentences=avoid)
-                sentence = result.sentence.strip()
-                error_type = result.error_type.strip()
+                result = p600_predict(instruction=error_type_prompt)
+                sentences_text = result.sentences.strip()
                 
-                if sentence and sentence not in unique_sentences:
-                    unique_sentences.add(sentence)
-                    sentences_data.append({
-                        "language": language,
-                        "sentence": sentence,
-                        "error_type": error_type
-                    })
-                    pbar.update(1)
+                # Split the response into individual sentences
+                sentences = [s.strip() for s in sentences_text.split('\n') if s.strip()]
+                
+                for sentence in sentences:
+                    if sentence and sentence not in unique_sentences and len(unique_sentences) < n_per_type:
+                        unique_sentences.add(sentence)
+                        sentences_data.append({
+                            "language": language,
+                            "sentence": sentence,
+                            "error_type": error_type.replace('_', ' ').title()
+                        })
+                        pbar.update(1)
+                
                 attempts += 1
                 
             except Exception as e:
-                print(f"Error generating sentence for {language}: {e}")
+                print(f"Error generating {error_type} sentences for {language}: {e}")
                 attempts += 1
                 continue
     
-    if len(unique_sentences) < n:
-        print(f"Warning: Only generated {len(unique_sentences)} unique P600 sentences for {language} after {attempts} attempts.")
+    if len(unique_sentences) < n_per_type:
+        print(f"Warning: Only generated {len(unique_sentences)} unique {error_type} sentences for {language} after {attempts} attempts.")
     
     return sentences_data
+
+def generate_p600_sentences(language, llm, cfg, n):
+    """
+    Generate P600 sentences for a specific language with equal distribution of error types.
+    
+    Args:
+        language (str): Language to generate sentences in
+        llm: The configured LLM
+        cfg: Configuration object
+        n (int): Total number of sentences to generate
+    
+    Returns:
+        list: List of dictionaries with sentence and error_type information
+    """
+    # Calculate how many sentences we need for each error type
+    n_per_type = n // len(P600_ERROR_TYPES)
+    remainder = n % len(P600_ERROR_TYPES)
+    
+    if n_per_type == 0:
+        print(f"Warning: {n} sentences is too few for {len(P600_ERROR_TYPES)} error types. Minimum should be {len(P600_ERROR_TYPES)}.")
+        n_per_type = 1
+        remainder = 0
+    
+    all_sentences = []
+    
+    # Generate sentences for each error type
+    for i, error_type in enumerate(P600_ERROR_TYPES):
+        # Distribute remainder sentences across first few error types
+        current_n = n_per_type + (1 if i < remainder else 0)
+        if current_n > 0:
+            print(f"  Generating {current_n} {error_type.replace('_', ' ')} sentences...")
+            try:
+                sentences = generate_p600_sentences_for_error_type(
+                    language, 
+                    error_type, 
+                    llm, 
+                    cfg, 
+                    current_n
+                )
+                all_sentences.extend(sentences)
+            except Exception as e:
+                print(f"Error generating {error_type} sentences for {language}: {e}")
+                # Continue with other error types
+                continue
+    
+    return all_sentences
 
 def generate_multilingual_p600_dataset(cfg):
     """
@@ -171,6 +255,8 @@ def main(cfg: DictConfig):
     print(f"Using LLM: {cfg.llm.model}")
     print(f"Languages: {', '.join(cfg.p600_generation.languages)}")
     print(f"Sentences per language: {cfg.p600_generation.num_sentences_per_language}")
+    print(f"Error types: {', '.join(P600_ERROR_TYPES)}")
+    print(f"Sentences per error type per language: {cfg.p600_generation.num_sentences_per_language // len(P600_ERROR_TYPES)}")
     
     try:
         # Generate P600 sentences for all languages
@@ -197,6 +283,18 @@ def main(cfg: DictConfig):
         error_counts = df['error_type'].value_counts()
         for error_type, count in error_counts.items():
             print(f"  {error_type}: {count}")
+        
+        # Print distribution by language and error type
+        print(f"\nDistribution by language and error type:")
+        for language in cfg.p600_generation.languages:
+            print(f"\n{language}:")
+            lang_df = df[df['language'] == language]
+            expected_per_type = cfg.p600_generation.num_sentences_per_language // len(P600_ERROR_TYPES)
+            for error_type in P600_ERROR_TYPES:
+                error_type_count = len(lang_df[lang_df['error_type'] == error_type.replace('_', ' ').title()])
+                expected = expected_per_type + (1 if P600_ERROR_TYPES.index(error_type) < cfg.p600_generation.num_sentences_per_language % len(P600_ERROR_TYPES) else 0)
+                status = "✓" if error_type_count == expected else f"✗ (expected {expected})"
+                print(f"  {error_type.replace('_', ' ').title()}: {error_type_count} {status}")
             
     except Exception as e:
         print(f"Error during P600 generation: {e}")

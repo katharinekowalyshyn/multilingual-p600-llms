@@ -1,29 +1,31 @@
 language,sentence,error_type
-English,The team of researchers are presenting their findings at the conference.,subject-verb agreement
-English,The group of students were excited about their upcoming trip.,subject-verb agreement
-English,The committee have made their decision regarding the new policy.,subject-verb agreement
-English,The flock of birds are flying south for the winter.,subject-verb agreement
-English,The pack of wolves were howling at the moon last night.,subject-verb agreement
-English,The family of cats are playing in the garden.,subject-verb agreement
-English,The herd of elephants was wandering through the savannahs together.,number agreement error
-English,The collection of books were placed on the shelf yesterday.,subject-verb agreement
-English,The group of friends was planning their vacation for next summer.,subject-verb agreement
-English,The bunch of flowers were blooming beautifully in the garden.,subject-verb agreement
-Español,La niña bonita juegan en el parque.,subject-verb agreement
-Español,La casa grande son muy bonita.,subject-verb agreement
-Español,Los niños juega en la escuela.,subject-verb agreement
-Español,Las flores hermosas crece en el jardín.,subject-verb agreement
-Español,El perro y la gata corre rápido por el jardín.,subject-verb agreement
-Español,Las chicas bonita baila en la fiesta.,subject-verb agreement
-Español,El niño alto y la niña bonita juega en el parque.,subject-verb agreement
-Español,Las flores hermosas crecen en el jardín de la casa.,number agreement error
-Español,El grupo de estudiantes son muy inteligente.,subject-verb agreement
-Español,La niña y el niño juega en el parque.,subject-verb agreement
-Deutsch,Die Katze und der Hund spielt im Garten.,subject-verb agreement
-Deutsch,Die Frau gehen zum Markt.,subject-verb agreement
-Deutsch,Die Kinder spielt im Park.,subject-verb agreement
-Deutsch,Die Mädchen spielt im Zimmer.,subject-verb agreement
-Deutsch,Der Junge und die Mädchen spielt im Park.,subject-verb agreement
-Deutsch,Die Frau und der Mann geht ins Kino.,subject-verb agreement
-Deutsch,Die Katze und der Hund spielen im Garten.,subject-verb agreement
-Deutsch,Die Frau und der Mann spielt im Restaurant.,subject-verb agreement
+English,The cat runned quickly across the street to catch the mouse.,Morphological Error
+English,She has two childs who are very talented in music.,Morphological Error
+English,The teacher adviced the students to study harder for the exam.,Morphological Error
+English,The cat barked loudly at the mailman as it chased the car down the street.,Semantic Reversal Anomaly
+English,The teacher praised the students for their excellent work while scolding them for their creativity.,Semantic Reversal Anomaly
+English,The chef served a delicious salad made of chocolate and fresh vegetables for dessert.,Semantic Reversal Anomaly
+English,The cat chased a mouse that was hiding under the table.,Article Noun Mismatch
+English,She wants to become an engineer who designs the bridges.,Article Noun Mismatch
+English,The quickly dog ran across the street.,Word Order Violation
+English,She the book read yesterday that was interesting.,Word Order Violation
+Español,El niño jugaba con sus amiguitos en el parque cuando de repente se cayo.,Morphological Error
+Español,Las flores en el jardín están muy hermosas y su fragancia son agradable.,Morphological Error
+Español,"Ella pensaba que los libros que le prestaron eran muy interesantes, pero no lo eran.",Morphological Error
+Español,El perro ladró suavemente mientras el gato dormía ruidosamente en la ventana.,Semantic Reversal Anomaly
+Español,La niña comió un helado caliente mientras su hermano bebía agua fría.,Semantic Reversal Anomaly
+Español,El coche aceleró lentamente mientras la bicicleta se detuvo rápidamente en la esquina.,Semantic Reversal Anomaly
+Español,El perro está en la casa de la gato.,Article Noun Mismatch
+Español,Una niña juega con el balón de la perro.,Article Noun Mismatch
+Español,El perro rápidamente corre hacia el parque.,Word Order Violation
+Español,La casa grande el niño pintó de azul.,Word Order Violation
+Deutsch,Die Katze spielten mit dem Ball im Garten.,Morphological Error
+Deutsch,Die Kinder läuft schnell zur Schule jeden Morgen.,Morphological Error
+Deutsch,"Der Lehrer erklärt die Regel, die die Schüler nicht verstanden haben.",Morphological Error
+Deutsch,"Der Hund jagte die Katze, während sie ihm einen Knochen brachte.",Semantic Reversal Anomaly
+Deutsch,"Die Lehrerin lobte den Schüler, weil er die Prüfung nicht bestanden hatte.",Semantic Reversal Anomaly
+Deutsch,"Der Arzt empfahl dem Patienten, mehr zu essen, um Gewicht zu verlieren.",Semantic Reversal Anomaly
+Deutsch,Der Hund spielt mit die Katze im Garten.,Article Noun Mismatch
+Deutsch,Eine Apfel liegt auf dem Tisch.,Article Noun Mismatch
+Deutsch,Der Hund den Ball spielt im Garten.,Word Order Violation
+Deutsch,Im Park die Kinder spielen fröhlich.,Word Order Violation
