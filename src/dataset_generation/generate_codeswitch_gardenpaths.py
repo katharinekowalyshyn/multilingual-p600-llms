@@ -1,4 +1,6 @@
 """
+NOTE: This script is not used in the final dataset generation yet. It could be used later on and I've tested it with the code-switching prompt before.
+
 Code-Switched Garden Path Sentence Generator
 
 This script generates code-switched garden path sentences that combine two languages

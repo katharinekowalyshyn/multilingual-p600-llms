@@ -8,10 +8,6 @@ Add new functions here as the project progresses.
 import os
 import pandas as pd
 
-def example_utility_function():
-    """Example utility function. Replace or expand as needed."""
-    pass 
-
 def save_dataframe_to_csv(df: pd.DataFrame, output_path: str):
     """
     Save a pandas DataFrame to a CSV file, creating the output directory if it doesn't exist.

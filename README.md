@@ -1,7 +1,7 @@
 # multilingual-gardenpath-llms
 
 This project is designed to generate and evaluate multilingual garden path sentences using large language models (LLMs). It is organized in three main parts:
-1. **Dataset Generation**: Automatically generate a dataset of garden path sentences in multiple languages using an LLM.
+1. **Dataset Generation**: Automatically generate datasets of garden path sentences in multiple languages using an LLM.
 2. **P600 Sentence Processing**: Process and classify P600 sentences for grammaticality using LLMs.
 3. **LLM Evaluation**: (Planned) Evaluate how well LLMs understand and process these sentences.
 
@@ -37,71 +37,106 @@ This project is designed to generate and evaluate multilingual garden path sente
 
 ## Configuration
 Edit `src/conf/config.yaml` to set:
-- `languages`: List of languages to generate sentences in
-- `num_sentences`: Number of unique sentences per language
-- `llm.model`: OpenAI model to use (e.g., `gpt-4o`) - used by both dataset generation and P600 processing
-- `prompt_files`: Mapping of language to prompt file (relative to `src/`)
-- `p600_processing`: Configuration for P600 sentence processing (enabled/disabled, input files, output directory, prompt)
+- `gardenpath_generation`: Configuration for multilingual garden path sentences
+- `codeswitch_generation`: Configuration for code-switched garden path sentences
+- `p600_generation`: Configuration for P600 sentence generation
+- `p600_processing`: Configuration for P600 sentence processing
+- `llm.model`: OpenAI model to use (e.g., `gpt-4o-mini`)
+- `prompt_files`: Mapping of language to prompt file
 
 ## Usage
 
 ### Dataset Generation
-To generate a dataset, run from the project root or `src/` directory:
+
+The project supports three types of dataset generation:
+
+#### 1. Multilingual Garden Path Sentences
+Generate garden path sentences in multiple languages:
 ```bash
-cd multilingual-gardenpath-llms
-python src/dataset_generation/generate_dataset.py
+cd src/dataset_generation
+python generate_multilingual_gardenpaths.py
 ```
-The output CSV will be saved as `src/dataset_generation/multillingual_dataset.csv`, with columns for `language` and `sentence`.
+Output: `multilingual_gardenpath_dataset.csv`
 
-- Each language will have the number of unique sentences specified in the config.
-- A progress bar will show generation progress for each language.
+#### 2. Code-Switched Garden Path Sentences
+Generate garden path sentences that mix two languages:
+```bash
+cd src/dataset_generation
+python generate_codeswitch_gardenpaths.py
+```
+Output: `codeswitch_gardenpath_dataset.csv`
 
-### P600 Sentence Processing
-To process P600 sentences for grammaticality classification:
+#### 3. P600 Sentences
+Generate P600 sentences for grammaticality analysis:
+```bash
+cd src/dataset_generation
+python generate_p600_sentences.py
+```
+Output: `p600_generated_sentences.csv`
 
-1. **Test the configuration:**
-   ```bash
-   cd "src/p600 sentences"
-   python test_p600.py
-   ```
+**Configuration Options:**
+- Set `enabled: true/false` for each generation type in `config.yaml`
+- Adjust `num_sentences` or `num_sentences_per_language` as needed
+- Modify `languages` list to include/exclude specific languages
+- Customize output file names
 
-2. **Run the processing:**
-   ```bash
-   python p600.py
-   # or use the shell script:
-   ./run_p600.sh
-   ```
+### Grammatical Analysis (P600 Processing)
 
-The system processes three CSV files:
+The P600 analysis system evaluates the grammaticality of three types of sentences:
+
+#### 1. Test the Configuration
+Before running the full analysis, test your setup:
+```bash
+cd src/grammar_analysis
+python test_p600.py
+```
+This will process a small sample (3 sentences) to verify everything works correctly.
+
+#### 2. Run the Full Analysis
+Process all sentence files for grammaticality classification:
+```bash
+cd src/grammar_analysis
+python p600_analysis.py
+# or use the convenient shell script:
+./run_p600.sh
+```
+
+#### 3. Input Files
+The system processes these CSV files (located in `src/grammar_analysis/`):
 - `gardenpath_sample.csv` - Garden path sentences
 - `control_gardenpath_sample.csv` - Control garden path sentences  
 - `p600_sample.csv` - P600 sample sentences
 
-Output files are saved in `src/p600 sentences/results/` with the original data plus a `grammaticality` column (1 for grammatical, 0 for non-grammatical).
+#### 4. Output
+Results are saved in `src/grammar_analysis/results/` with:
+- Original sentence data
+- `grammaticality` column (1 for grammatical, 0 for non-grammatical)
+- Summary statistics with counts and percentages
 
 **Features:**
 - Uses DSPY to enforce binary output format (0 or 1 only)
 - Progress tracking for each file being processed
 - Error handling and automatic fallback for invalid outputs
-- Summary statistics with counts and percentages
 - Fully integrated with Hydra configuration system
 
 ## Project Structure
 ```
 src/
 ├── conf/
-│   └── config.yaml          # Main configuration file
+│   └── config.yaml                    # Main configuration file
 ├── dataset_generation/
-│   ├── generate_dataset.py  # Dataset generation script
-│   └── ...                  # Generated datasets
-├── p600 sentences/
-│   ├── p600.py             # P600 processing script
-│   ├── test_p600.py        # Configuration test script
-│   ├── run_p600.sh         # Convenient runner script
-│   ├── *.csv               # Input sentence files
-│   └── results/            # Output directory
-├── prompts/                 # Prompt templates
-└── utils.py                # Utility functions
+│   ├── generate_multilingual_gardenpaths.py    # Multilingual sentences
+│   ├── generate_codeswitch_gardenpaths.py      # Code-switched sentences
+│   ├── generate_p600_sentences.py              # P600 sentences
+│   └── *.csv                          # Generated datasets
+├── grammar_analysis/
+│   ├── p600_analysis.py              # Main P600 processing script
+│   ├── test_p600.py                  # Configuration test script
+│   ├── run_p600.sh                   # Convenient runner script
+│   ├── *.csv                         # Input sentence files
+│   └── results/                      # Output directory
+├── prompts/                           # Prompt templates
+└── utils.py                          # Utility functions
 ```
 
 ## Utilities
@@ -118,12 +153,14 @@ src/
 ### Dataset Generation
 - Ensure `OPENAI_API_KEY` is set in your environment
 - Check that prompt files exist in the specified locations
+- Verify that the generation type is enabled in `config.yaml`
 
 ### P600 Processing
-- Ensure `NEURONPEDIA_API_KEY` is set in your environment
+- Ensure `OPENAI_API_KEY` is set in your environment
 - Verify all CSV files exist and have proper formatting
 - Check the `results/` directory for output files
 - Invalid LLM outputs automatically default to 0
+- Use `test_p600.py` to debug configuration issues
 
 ## License
 MIT

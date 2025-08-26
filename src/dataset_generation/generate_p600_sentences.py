@@ -51,7 +51,7 @@ Output:
 - Equal distribution of error types for each language
 
 Created: 2025-08-21
-Updated: 2025-01-XX - Added equal distribution of error types
+Updated: 2025-08-26
 """
 
 import hydra
