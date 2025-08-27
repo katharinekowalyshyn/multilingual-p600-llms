@@ -51,18 +51,6 @@ if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
 
 def generate_garden_path_sentences(language, llm, cfg, n):
-    """
-    Generate garden path sentences for a specific language.
-    
-    Args:
-        language (str): Language to generate sentences in
-        llm: The configured LLM
-        cfg: Configuration object
-        n (int): Number of sentences to generate
-    
-    Returns:
-        list: List of dictionaries with language and sentence information
-    """
     if language not in cfg.prompt_files:
         raise ValueError(f"No prompt file specified for language '{language}'. Please add it to the config under 'prompt_files'.")
     
@@ -73,7 +61,6 @@ def generate_garden_path_sentences(language, llm, cfg, n):
     except FileNotFoundError:
         raise ValueError(f"Prompt file not found for {language}: {prompt_file}")
 
-    # Use dspy Predict module to enforce unique garden path sentence generation
     class GardenPathSignature(dspy.Signature):
         """Generate a unique garden path sentence in a single language."""
         instruction: str = dspy.InputField()
@@ -116,22 +103,13 @@ def generate_garden_path_sentences(language, llm, cfg, n):
     return sentences_data
 
 def generate_multilingual_gardenpath_dataset(cfg):
-    """
-    Generate garden path sentences for all configured languages.
-    
-    Args:
-        cfg: Configuration object
-    
-    Returns:
-        list: List of dictionaries with language and sentence
-    """
     all_sentences = []
     
     for language in cfg.gardenpath_generation.languages:
         print(f"\nGenerating garden path sentences for {language}...")
         sentences = generate_garden_path_sentences(
             language, 
-            None,  # LLM is configured globally
+            None,  
             cfg, 
             cfg.gardenpath_generation.num_sentences
         )
@@ -139,20 +117,14 @@ def generate_multilingual_gardenpath_dataset(cfg):
     
     return all_sentences
 
-# Dynamically determine the config path relative to this script
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "..", "conf")
 
 @hydra.main(config_path=CONFIG_PATH, config_name="config", version_base=None)
 def main(cfg: DictConfig):
-    """
-    Main function to generate garden path sentences in multiple languages.
-    """
-    # Check if garden path generation is enabled
     if not cfg.gardenpath_generation.enabled:
         print("Garden path generation is disabled in config. Set 'enabled: true' to run.")
         return
-    
-    # Set up LLM
+
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable not set. Please set it in your bash profile or session.")
@@ -166,10 +138,7 @@ def main(cfg: DictConfig):
     print(f"Sentences per language: {cfg.gardenpath_generation.num_sentences}")
     
     try:
-        # Generate garden path sentences for all languages
         all_sentences = generate_multilingual_gardenpath_dataset(cfg)
-        
-        # Create DataFrame and save to CSV
         df = pd.DataFrame(all_sentences)
         output_path = os.path.join(SCRIPT_DIR, cfg.gardenpath_generation.output_file)
         save_dataframe_to_csv(df, output_path)
@@ -180,7 +149,6 @@ def main(cfg: DictConfig):
         print(f"Results saved to: {output_path}")
         print(f"{'='*50}")
         
-        # Print summary by language
         for language in cfg.gardenpath_generation.languages:
             lang_sentences = df[df['language'] == language]
             print(f"{language}: {len(lang_sentences)} sentences")

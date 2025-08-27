@@ -70,11 +70,9 @@ def generate_code_switched_gardenpath_sentences(language1, language2, total_sent
     data = []
     
     print(f"Generating {total_sentences} code-switched garden path sentences ({language1}/{language2})...")
-    
-    # Use the provided code-switching prompt template
+
     prompt = code_switch_prompt.format(language1=language1, language2=language2)
 
-    # Use dspy Predict module for code-switched garden path sentences
     class CodeSwitchGardenPathSignature(dspy.Signature):
         """Generate a code-switched garden path sentence."""
         instruction: str = dspy.InputField()
@@ -107,20 +105,14 @@ def generate_code_switched_gardenpath_sentences(language1, language2, total_sent
     
     return data
 
-# Dynamically determine the config path relative to this script
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "..", "conf")
 
 @hydra.main(config_path=CONFIG_PATH, config_name="config", version_base=None)
 def main(cfg: DictConfig):
-    """
-    Main function to generate code-switched garden path sentences.
-    """
-    # Check if code-switching generation is enabled
     if not cfg.codeswitch_generation.enabled:
         print("Code-switching generation is disabled in config. Set 'enabled: true' to run.")
         return
     
-    # Set up LLM
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         raise ValueError("OPENAI_API_KEY environment variable not set. Please set it in your bash profile or session.")
@@ -135,8 +127,6 @@ def main(cfg: DictConfig):
     
     try:
         all_sentences = []
-        
-        # Generate code-switched sentences for each language pair
         for language_pair in cfg.codeswitch_generation.bilingual_languages:
             language1, language2 = language_pair
             print(f"\n{'='*50}")
@@ -152,8 +142,7 @@ def main(cfg: DictConfig):
                 cfg
             )
             all_sentences.extend(sentences)
-        
-        # Create DataFrame and save to CSV
+
         df = pd.DataFrame(all_sentences)
         output_path = os.path.join(SCRIPT_DIR, cfg.codeswitch_generation.output_file)
         save_dataframe_to_csv(df, output_path)
@@ -164,7 +153,6 @@ def main(cfg: DictConfig):
         print(f"Results saved to: {output_path}")
         print(f"{'='*50}")
         
-        # Print summary by language pair
         for language_pair in cfg.codeswitch_generation.bilingual_languages:
             lang1, lang2 = language_pair
             pair_sentences = df[df['language_pair'] == f"{lang1}/{lang2}"]

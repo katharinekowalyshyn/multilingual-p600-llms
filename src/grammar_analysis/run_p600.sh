@@ -6,8 +6,8 @@
 echo "Setting up P600 sentence processing environment..."
 
 # Check if we're in the right directory
-if [ ! -f "p600.py" ]; then
-    echo "Error: Please run this script from the 'p600 sentences' directory"
+if [ ! -f "p600_analysis.py" ]; then
+    echo "Error: Please run this script from the 'src/grammar_analysis' directory"
     exit 1
 fi
 
@@ -29,7 +29,7 @@ echo "✓ $api_key_env environment variable is set"
 echo "✓ Running P600 sentence processing..."
 
 # Run the processing
-python p600.py
+python p600_analysis.py
 
 echo "✓ Processing complete!"
 echo "Check the 'results' directory for output files."

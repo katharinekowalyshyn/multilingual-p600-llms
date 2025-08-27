@@ -70,7 +70,6 @@ SRC_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
 
-# Define the P600 error types that we want to generate
 P600_ERROR_TYPES = [
     "morphological_error",
     "semantic_reversal_anomaly", 
@@ -102,7 +101,6 @@ def generate_p600_sentences_for_error_type(language, error_type, llm, cfg, n_per
     except FileNotFoundError:
         raise ValueError(f"P600 generation prompt file not found: {prompt_file}")
 
-    # Create a specialized prompt for the specific error type
     error_type_prompt = f"""Generate {n_per_type} unique P600 sentences in {language} that specifically contain a {error_type.replace('_', ' ')}.
 
 Focus on creating sentences with this specific grammatical error:
@@ -117,7 +115,6 @@ The sentences should:
 
 Generate exactly {n_per_type} sentences, one per line."""
 
-    # Use dspy Predict module to enforce unique P600 sentence generation for specific error type
     class P600ErrorTypeSignature(dspy.Signature):
         """Generate unique P600 sentences with a specific grammatical error type."""
         instruction: str = dspy.InputField()
@@ -135,8 +132,6 @@ Generate exactly {n_per_type} sentences, one per line."""
             try:
                 result = p600_predict(instruction=error_type_prompt)
                 sentences_text = result.sentences.strip()
-                
-                # Split the response into individual sentences
                 sentences = [s.strip() for s in sentences_text.split('\n') if s.strip()]
                 
                 for sentence in sentences:
@@ -174,7 +169,6 @@ def generate_p600_sentences(language, llm, cfg, n):
     Returns:
         list: List of dictionaries with sentence and error_type information
     """
-    # Calculate how many sentences we need for each error type
     n_per_type = n // len(P600_ERROR_TYPES)
     remainder = n % len(P600_ERROR_TYPES)
     
@@ -185,9 +179,7 @@ def generate_p600_sentences(language, llm, cfg, n):
     
     all_sentences = []
     
-    # Generate sentences for each error type
     for i, error_type in enumerate(P600_ERROR_TYPES):
-        # Distribute remainder sentences across first few error types
         current_n = n_per_type + (1 if i < remainder else 0)
         if current_n > 0:
             print(f"  Generating {current_n} {error_type.replace('_', ' ')} sentences...")
@@ -202,7 +194,6 @@ def generate_p600_sentences(language, llm, cfg, n):
                 all_sentences.extend(sentences)
             except Exception as e:
                 print(f"Error generating {error_type} sentences for {language}: {e}")
-                # Continue with other error types
                 continue
     
     return all_sentences
@@ -231,15 +222,10 @@ def generate_multilingual_p600_dataset(cfg):
     
     return all_sentences
 
-# Dynamically determine the config path relative to this script
 CONFIG_PATH = os.path.join(SCRIPT_DIR, "..", "conf")
 
 @hydra.main(config_path=CONFIG_PATH, config_name="config", version_base=None)
 def main(cfg: DictConfig):
-    """
-    Main function to generate P600 sentences for multiple languages.
-    """
-    # Check if P600 generation is enabled
     if not cfg.p600_generation.enabled:
         print("P600 generation is disabled in config. Set 'enabled: true' to run.")
         return
@@ -259,10 +245,7 @@ def main(cfg: DictConfig):
     print(f"Sentences per error type per language: {cfg.p600_generation.num_sentences_per_language // len(P600_ERROR_TYPES)}")
     
     try:
-        # Generate P600 sentences for all languages
         all_sentences = generate_multilingual_p600_dataset(cfg)
-        
-        # Create DataFrame and save to CSV
         df = pd.DataFrame(all_sentences)
         output_path = os.path.join(SCRIPT_DIR, cfg.p600_generation.output_file)
         save_dataframe_to_csv(df, output_path)
@@ -273,18 +256,15 @@ def main(cfg: DictConfig):
         print(f"Results saved to: {output_path}")
         print(f"{'='*50}")
         
-        # Print summary by language
         for language in cfg.p600_generation.languages:
             lang_sentences = df[df['language'] == language]
             print(f"{language}: {len(lang_sentences)} sentences")
         
-        # Print summary by error type
         print(f"\nError types generated:")
         error_counts = df['error_type'].value_counts()
         for error_type, count in error_counts.items():
             print(f"  {error_type}: {count}")
-        
-        # Print distribution by language and error type
+            
         print(f"\nDistribution by language and error type:")
         for language in cfg.p600_generation.languages:
             print(f"\n{language}:")
