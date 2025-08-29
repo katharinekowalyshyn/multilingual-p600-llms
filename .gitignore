@@ -1,4 +1,8 @@
 # Neuronpedia API test helper (not for version control)
 src/incremental_analysis/test_neuronpedia_api.py
 
+# Output folders (top-level and nested)
+outputs/
+**/outputs/
+
 
