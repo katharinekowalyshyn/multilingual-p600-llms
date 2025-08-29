@@ -1,9 +1,11 @@
+- **New in this update**: Added a Neuronpedia-powered SAE analysis of P600 sentences (`src/incremental_analysis/p600_analysis.py`).
+
 # multilingual-gardenpath-llms
 
 This project is designed to generate and evaluate multilingual garden path sentences using large language models (LLMs). It is organized in three main parts:
 1. **Dataset Generation**: Automatically generate datasets of garden path sentences in multiple languages using an LLM.
 2. **P600 Sentence Processing**: Process and classify P600 sentences for grammaticality using LLMs.
-3. **LLM Evaluation**: (Planned) Evaluate how well LLMs understand and process these sentences.
+3. **SAE-based Internal Analysis (Neuronpedia)**: Analyze how Sparse Autoencoder (SAE) features change for control vs P600 sentences using remote SAEs via the Neuronpedia API.
 
 ## Features
 - Multilingual support (easily configurable languages)
@@ -13,27 +15,34 @@ This project is designed to generate and evaluate multilingual garden path sente
 - Progress bar for dataset generation
 - Ensures unique garden path sentences per language
 - P600 sentence grammaticality classification with binary output (0/1)
+- Neuronpedia API integration for SAE feature analysis (no heavy local models)
 
-## Setup
+## Quickstart
 
-1. **Clone the repository**
-2. **Create and activate a conda environment**
-   ```bash
-   conda create -y -n gardenpath python=3.12
-   conda activate gardenpath
-   ```
-3. **Install dependencies**
-   ```bash
-   pip install hydra-core dspy-ai pandas tqdm
-   ```
-4. **Set your API keys**
-   ```bash
-   # For dataset generation and P600 processing (OpenAI models)
-   export OPENAI_API_KEY=sk-...yourkey...
-   
-   # For other model providers (if not using OpenAI)
-   export NEURONPEDIA_API_KEY=your_neuronpedia_key_here
-   ```
+- Create environment
+```bash
+conda create -y -n gardenpath python=3.12
+conda activate gardenpath
+```
+
+- Install core deps for generation/processing
+```bash
+pip install hydra-core dspy-ai pandas tqdm
+```
+
+- Install deps for SAE analysis (Neuronpedia API)
+```bash
+pip install requests numpy matplotlib seaborn tqdm
+```
+
+- Set API keys (as needed)
+```bash
+# For dataset generation / grammaticality via LLMs (if applicable)
+export OPENAI_API_KEY=sk-...yourkey...
+
+# For Neuronpedia SAE API
+export NEURONPEDIA_API_KEY=your_neuronpedia_key_here
+```
 
 ## Configuration
 Edit `src/conf/config.yaml` to set:
@@ -119,6 +128,37 @@ Results are saved in `src/grammar_analysis/results/` with:
 - Error handling and automatic fallback for invalid outputs
 - Fully integrated with Hydra configuration system
 
+### SAE-Based P600 Analysis (Neuronpedia)
+
+Analyze how SAE features change between control sentences and P600 sentences, using the Neuronpedia API (no local model loading).
+
+- Inputs (CSV):
+  - `src/grammar_analysis/control_gardenpath_sample.csv`
+  - `src/grammar_analysis/p600_sample.csv`
+
+- Script:
+```bash
+cd src/incremental_analysis
+export NEURONPEDIA_API_KEY=your_neuronpedia_key_here
+python p600_analysis.py
+```
+
+- What it does:
+  - Calls Neuronpedia `POST /api/activation/new` to extract SAE features for `gpt2-small`
+  - Compares per-feature means between Control and P600
+  - Pads variable-length sequences (different token counts) to a common length
+  - Produces plots and CSVs
+  - Includes overall progress and ETA per submodule
+
+- Outputs (default):
+  - `src/incremental_analysis/results/feature_analysis.png`
+  - `src/incremental_analysis/results/feature_analysis_results.csv`
+  - Log output with progress, feature shapes, and timing
+
+- API usage and limits:
+  - Default configuration processes 8 submodules across 2 datasets × 25 sentences ≈ ~400 API calls (< 1000/hour limit)
+  - To change submodules, edit `all_submodule_names` near the top of `src/incremental_analysis/p600_analysis.py` (e.g., add/remove `attn_k`, `mlp_k`, `resid_k` indices)
+
 ## Project Structure
 ```
 src/
@@ -134,7 +174,10 @@ src/
 │   ├── test_p600.py                  # Configuration test script
 │   ├── run_p600.sh                   # Convenient runner script
 │   ├── *.csv                         # Input sentence files
-│   └── results/                      # Output directory
+│   └── results/                      # Output directory (grammaticality)
+├── incremental_analysis/
+│   ├── p600_analysis.py              # Neuronpedia SAE analysis (control vs P600)
+│   └── results/                      # feature_analysis.png / feature_analysis_results.csv
 ├── prompts/                           # Prompt templates
 └── utils.py                          # Utility functions
 ```
@@ -146,7 +189,7 @@ src/
 ## Extending the Project
 - Add new utility functions to `src/utils.py` as needed.
 - The P600 processing system can be extended to handle different sentence types or languages.
-- The second part of the project (LLM evaluation) will be implemented in future scripts.
+- The SAE analysis can be extended by adding/removing submodules or switching Neuronpedia models if available.
 
 ## Troubleshooting
 
@@ -162,9 +205,15 @@ src/
 - Invalid LLM outputs automatically default to 0
 - Use `test_p600.py` to debug configuration issues
 
+### SAE Analysis (Neuronpedia)
+- Ensure `NEURONPEDIA_API_KEY` is set
+- If you get `429`, reduce submodules or wait for limit reset
+- Confirm you are on `https://www.neuronpedia.org` (not the old `api.` host)
+
 ## License
 MIT
 
 ## Acknowledgments
 - [DSPy](https://github.com/stanfordnlp/dspy) for LLM management
 - [Hydra](https://hydra.cc/) for configuration management
+- [Neuronpedia](https://www.neuronpedia.org) for remote SAE features
