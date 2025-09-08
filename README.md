@@ -217,3 +217,26 @@ MIT
 - [DSPy](https://github.com/stanfordnlp/dspy) for LLM management
 - [Hydra](https://hydra.cc/) for configuration management
 - [Neuronpedia](https://www.neuronpedia.org) for remote SAE features
+
+## Running P600 Incremental Analysis (Gemma + SAELens)
+
+### Local
+```bash
+pip install -r requirements.txt
+python src/incremental_analysis/gemma_p600_incremental_analysis.py \
+  incremental_p600.model.gemma_checkpoint=google/gemma-2-2b-it \
+  incremental_p600.model.sae_release_id=gemma-2-2b-res-jb-l20 \
+  incremental_p600.batch_size=8
+```
+
+### Runpod
+1. Ensure your repo is linked in Runpod and set to build from Dockerfile.
+2. Build the image from the root (Runpod will detect Dockerfile).
+3. Launch a GPU pod with at least 12GB VRAM (larger recommended for bigger Gemma checkpoints).
+4. Optionally set environment variables to override Hydra config:
+   - `GEMMA_CHECKPOINT`, `SAE_RELEASE_ID`, `BATCH_SIZE`, `CONTROL_CSV`, `P600_CSV`, `OUTPUT_DIR`, `SAVE_PER_FEATURE`
+5. Start the container command:
+```bash
+bash runpod_start.sh
+```
+Outputs will be written to `incremental_p600.output_dir` (default `src/incremental_analysis/results`).

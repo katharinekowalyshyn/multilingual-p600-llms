@@ -46,3 +46,16 @@ prompt_files:
   Español: "prompts/espanol_gardenpath_prompt.txt"
   Deutsch: "prompts/deutsch_gardenpath_prompt.txt" 
   code_switch_prompt: "prompts/code_switch_prompt.txt"
+
+# Incremental P600 analysis with Gemma + SAELens/TransformerLens
+incremental_p600:
+  enabled: true
+  input_files:
+    control: "src/grammar_analysis/control_gardenpath_sample.csv"
+    p600: "src/grammar_analysis/p600_sample.csv"
+  output_dir: "src/incremental_analysis/results"
+  model:
+    gemma_checkpoint: "google/gemma-2-2b-it"
+    sae_release_id: "gemma-2-2b-res-jb-l20"
+  batch_size: 8
+  save_per_feature: false
