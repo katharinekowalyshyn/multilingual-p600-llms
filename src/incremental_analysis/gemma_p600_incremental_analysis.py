@@ -29,6 +29,7 @@ from omegaconf import DictConfig, OmegaConf
 from transformer_lens import HookedTransformer
 from transformer_lens.hook_points import HookPoint
 from saelens import SAE
+from src.utils import get_neuronpedia_api_key, neuronpedia_fetch_sae_features
 sns.set_style("whitegrid")
 
 

@@ -26,228 +26,46 @@ import requests
 import json
 import os
 from transformers import AutoTokenizer
+from src.utils import get_neuronpedia_api_key, neuronpedia_fetch_sae_features
 import time
 
 # Set style for plots
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (12, 8)
 
-class NeuronpediaAPI:
-    """Interface to Neuronpedia API for model inference and SAE features"""
-    
-    def __init__(self, api_key: str, base_url: str = "https://www.neuronpedia.org"):
-        self.api_key = api_key
-        self.base_url = base_url
-        self.headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-    
-    def get_available_models(self):
-        """Get list of available models and their SAE sources"""
-        # Try different possible API endpoints
-        possible_endpoints = [
-            f"{self.base_url}/api/models",
-            f"{self.base_url}/api/sources",
-            f"{self.base_url}/api/releases",
-            f"{self.base_url}/api"
-        ]
-        
-        for endpoint in possible_endpoints:
-            try:
-                print(f"Checking endpoint: {endpoint}")
-                response = requests.get(endpoint, headers=self.headers, timeout=30)
-                
-                print(f"Response status: {response.status_code}")
-                print(f"Response content type: {response.headers.get('content-type', 'unknown')}")
-                
-                if response.status_code == 200:
-                    # Check if response is HTML (which suggests wrong endpoint)
-                    if response.text.strip().startswith('<!DOCTYPE') or response.text.strip().startswith('<html'):
-                        print(f"⚠️ {endpoint} returns HTML, not JSON")
-                        continue
-                    
-                    try:
-                        data = response.json()
-                        print(f"✓ Success with endpoint: {endpoint}")
-                        return data
-                    except json.JSONDecodeError as e:
-                        print(f"⚠️ JSON decode error at {endpoint}: {e}")
-                        continue
-                else:
-                    print(f"❌ {endpoint} failed: {response.status_code}")
-                    continue
-                    
-            except Exception as e:
-                print(f"Error with endpoint {endpoint}: {e}")
-                continue
-        
-        print("❌ No working API endpoints found")
-        return None
-    
-    def get_available_sources(self, model_name: str):
-        """Get available sources for a specific model"""
-        # Try to get available sources from the available-resources page
-        try:
-            url = f"{self.base_url}/available-resources"
-            print(f"Checking available resources at: {url}")
-            
-            response = requests.get(url, headers=self.headers, timeout=30)
-            if response.status_code == 200:
-                # This will return HTML, but we can extract source information
-                # For now, let's use some common source IDs based on the user's example
-                if model_name == "gpt2-small":
-                    return ["9-res-jb", "1-res-jb", "2-res-jb"]  # Common source IDs
-                else:
-                    return ["default"]
-            else:
-                print(f"Failed to get available resources: {response.status_code}")
-                return ["default"]
-                
-        except Exception as e:
-            print(f"Error getting available sources: {e}")
-            return ["default"]
-    
-    def get_model_activations(self, model_name: str, prompt: str, layer: int, 
-                             submodule: str = "resid") -> Dict:
-        """Get model activations for a specific layer and submodule"""
-        
-        # Use the correct endpoint based on the user's example
-        endpoint = f"{self.base_url}/api/activation/new"
-        
-        # Get available sources for this model
-        available_sources = self.get_available_sources(model_name)
-        print(f"Available sources for {model_name}: {available_sources}")
-        
-        # Try each available source until one works
-        for source in available_sources:
-            payload = {
-                "feature": {
-                    "modelId": model_name,
-                    "source": source,
-                    "index": str(layer)
-                },
-                "customText": prompt
-            }
-            
-            try:
-                print(f"Trying with source: {source}")
-                print(f"Payload: {payload}")
-                
-                response = requests.post(endpoint, headers=self.headers, json=payload, timeout=30)
-                
-                print(f"Response status: {response.status_code}")
-                print(f"Response content type: {response.headers.get('content-type', 'unknown')}")
-                
-                if response.status_code == 200:
-                    print("✓ API call successful")
-                    
-                    # Check if response has content
-                    if not response.text.strip():
-                        print("⚠️ Response is empty")
-                        continue
-                    
-                    try:
-                        return response.json()
-                    except json.JSONDecodeError as e:
-                        print(f"⚠️ JSON decode error: {e}")
-                        print(f"Raw response: {response.text[:500]}...")
-                        continue
-                        
-                elif response.status_code == 401:
-                    print("❌ Authentication failed - check your API key")
-                    return None
-                elif response.status_code == 500:
-                    error_msg = response.text[:200] if response.text else "Unknown error"
-                    print(f"⚠️ API error with source {source}: {error_msg}")
-                    # Try to parse JSON error if possible
-                    try:
-                        error_json = response.json()
-                        if 'message' in error_json:
-                            print(f"Error details: {error_json['message']}")
-                    except:
-                        pass
-                    continue  # Try next source
-                else:
-                    print(f"❌ API error {response.status_code}: {response.text[:200]}...")
-                    continue
-                    
-            except Exception as e:
-                print(f"❌ API call failed with source {source}: {e}")
-                continue
-        
-        print("❌ All sources failed")
-        return None
-    
-    def get_sae_features(self, model_name: str, prompt: str, layer: int,
-                        submodule: str = "resid") -> np.ndarray:
-        """Extract SAE features from model activations"""
-        
-        activations = self.get_model_activations(model_name, prompt, layer, submodule)
-        if activations and 'values' in activations:
-            # The 'values' field contains the SAE feature activations
-            values = activations['values']
-            print(f"✓ Extracted SAE features from 'values' field")
-            print(f"Feature shape: {len(values)} values")
-            return np.array(values)
-        elif activations and 'sae_features' in activations:
-            return np.array(activations['sae_features'])
-        elif activations and 'features' in activations:
-            return np.array(activations['features'])
-        elif activations and 'activations' in activations:
-            # If we get raw activations, we might need to process them differently
-            return np.array(activations['activations'])
-        else:
-            if activations:
-                print(f"Unexpected response structure: {list(activations.keys())}")
-                print(f"Available fields: {activations}")
-            return None
+def fetch_sae_features(api_key: str, prompt: str, model_id: str, source: str, index: int,
+                      base_url: str = "https://www.neuronpedia.org") -> np.ndarray:
+    """Get SAE features from Neuronpedia API.
 
-    def test_api_connection(self):
-        """Test basic API connectivity and authentication"""
-        print("🔍 Testing Neuronpedia API connectivity...")
-        
-        # Try different authentication approaches
-        test_headers = [
-            {"Authorization": f"Bearer {self.api_key}"},
-            {"X-API-Key": self.api_key},
-            {"api-key": self.api_key},
-            {"token": self.api_key}
-        ]
-        
-        # Try different base URLs
-        possible_base_urls = [
-            "https://www.neuronpedia.org",
-            "https://api.neuronpedia.org",
-            "https://neuronpedia.org"
-        ]
-        
-        for base_url in possible_base_urls:
-            for headers in test_headers:
-                try:
-                    # Try a simple health check endpoint
-                    endpoint = f"{base_url}/api/health"
-                    print(f"Testing: {endpoint} with headers: {list(headers.keys())}")
-                    
-                    response = requests.get(endpoint, headers=headers, timeout=10)
-                    print(f"Status: {response.status_code}")
-                    
-                    if response.status_code == 200:
-                        print(f"✓ Success with {base_url} and headers {list(headers.keys())}")
-                        return base_url, headers
-                    elif response.status_code == 401:
-                        print(f"⚠️ Authentication failed with {base_url}")
-                    elif response.status_code == 404:
-                        print(f"⚠️ Endpoint not found: {endpoint}")
-                    else:
-                        print(f"⚠️ Unexpected status: {response.status_code}")
-                        
-                except Exception as e:
-                    print(f"Error testing {base_url}: {e}")
-                    continue
-        
-        print("❌ No working API configuration found")
-        return None, None
+    Parameters
+    - api_key: Bearer token for Neuronpedia
+    - prompt: text to evaluate
+    - model_id: e.g., "gpt2-small"
+    - source: e.g., "9-res-jb"
+    - index: layer/source index as expected by Neuronpedia
+    - base_url: Neuronpedia host
+    """
+    
+    endpoint = f"{base_url}/api/activation/new"
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    payload = {
+        "feature": {"modelId": model_id, "source": source, "index": str(index)},
+        "customText": prompt,
+    }
+    try:
+        resp = requests.post(endpoint, headers=headers, json=payload, timeout=30)
+        if resp.status_code != 200:
+            return None
+        data = resp.json()
+        # Prefer 'values' if present
+        if isinstance(data, dict):
+            for key in ("values", "sae_features", "features", "activations"):
+                if key in data:
+                    arr = np.array(data[key])
+                    return arr
+    except Exception:
+        return None
+    return None
 
 def analyze_feature_changes(control_features, p600_features):
     """Analyze how SAE features change between control and P600 sentences"""
@@ -443,15 +261,13 @@ def main(cfg: DictConfig):
     print("Starting P600 SAE analysis with Neuronpedia API...")
     
     # Check for API key
-    api_key = os.environ.get("NEURONPEDIA_API_KEY")
-    if not api_key:
-        print("❌ NEURONPEDIA_API_KEY environment variable not set")
-        print("Please set it: export NEURONPEDIA_API_KEY=your_key_here")
+    try:
+        api_key = get_neuronpedia_api_key()
+    except RuntimeError as e:
+        print(f"❌ {e}")
         return
     
-    # Initialize Neuronpedia API
-    api = NeuronpediaAPI(api_key=api_key)
-    print("✓ Neuronpedia API initialized")
+    print("✓ Neuronpedia API configured")
     
     # Model configuration
     model_name = "gpt2-small"  # Model available on Neuronpedia
@@ -510,7 +326,9 @@ def main(cfg: DictConfig):
                 else:
                     layer = 0
             
-            features = api.get_sae_features(model_name, prompt, layer, submodule_name)
+            # Simple mapping: choose a likely source id for GPT-2; users can adjust
+            source = "9-res-jb" if layer > 0 else "1-res-jb"
+            features = neuronpedia_fetch_sae_features(api_key, prompt, model_name, source, layer)
             if features is not None:
                 features_list.append(features)
             else:
@@ -551,7 +369,8 @@ def main(cfg: DictConfig):
                 else:
                     layer = 0
             
-            features = api.get_sae_features(model_name, prompt, layer, submodule_name)
+            source = "9-res-jb" if layer > 0 else "1-res-jb"
+            features = neuronpedia_fetch_sae_features(api_key, prompt, model_name, source, layer)
             if features is not None:
                 features_list.append(features)
             else:
