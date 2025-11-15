@@ -26,6 +26,75 @@ p600_generation:
   num_sentences_per_language: 10
   output_file: "p600_generated_sentences.csv"
 
+# Multilingual P600 Extension Configuration
+multilingual_p600:
+  enabled: true
+  # 14 languages across resource levels
+  languages:
+    # High-resource languages
+    high_resource:
+      - Chinese
+      - Spanish
+      - French
+      - German
+      - Portuguese
+      - Italian
+      - Japanese
+      - Korean
+    # Mid-resource languages
+    mid_resource:
+      - Arabic
+      - Indonesian
+    # Low-resource languages
+    low_resource:
+      - Hindi
+      - Bengali
+      - Swahili
+      - Yoruba
+  # Models to test (all via Ollama)
+  ollama_base_url: "http://localhost:11434"  # Ollama API base URL
+  models:
+    llama_3_1:
+      enabled: true
+      model_name: "llama3.1"  # Ollama model name (pull with: ollama pull llama3.1)
+    gpt_oss_20b:
+      enabled: false  # Enable when model is available in Ollama
+      model_name: "gpt-oss-20b"  # Update with actual Ollama model name
+    gemma_7b:
+      enabled: true
+      model_name: "gemma2:7b"  # Ollama model name (pull with: ollama pull gemma2:7b)
+    gemma_2b:
+      enabled: true
+      model_name: "gemma2:2b"  # Ollama model name (pull with: ollama pull gemma2:2b)
+  # Experiment configurations
+  experiments:
+    experiment_1_semantic_tracking:
+      enabled: true
+      chunk_strategy: "syntactic"  # Use syntactic units (phrases/clauses) for chunking
+      num_qa_probes: 5  # Questions per sentence
+      output_dir: "src/multilingual_experiments/exp1_semantic_tracking/results"
+    experiment_2_parse_trees:
+      enabled: true
+      method: "manning_2020"  # Parse tree extraction method
+      output_dir: "src/multilingual_experiments/exp2_parse_trees/results"
+    experiment_3_attention:
+      enabled: true
+      layers_to_analyze: "all"  # or list of layer indices
+      output_dir: "src/multilingual_experiments/exp3_attention/results"
+    experiment_4_unambiguous_controls:
+      enabled: true
+      generate_controls: true  # Generate unambiguous control sentences
+      output_dir: "src/multilingual_experiments/exp4_controls/results"
+  # Dataset generation
+  dataset:
+    num_gardenpath_sentences_per_language: 20
+    num_control_sentences_per_language: 20
+    ambiguity_types:
+      - attachment_ambiguity
+      - case_marking_ambiguity
+      - relative_clause_ambiguity
+    output_dir: "src/multilingual_experiments/datasets"
+
 p600_processing:
   enabled: true
   prompt_file: "prompts/p600_prompt.txt"

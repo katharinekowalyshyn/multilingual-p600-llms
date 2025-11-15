@@ -12,4 +12,5 @@ datasets>=2.19
 sentencepiece>=0.1.99
 einops>=0.7
 requests>=2.31
+transformers>=4.30.0
 
