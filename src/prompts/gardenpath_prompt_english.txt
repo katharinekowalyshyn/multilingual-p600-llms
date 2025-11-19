@@ -1,0 +1,14 @@
+Generate a garden-path sentence in English.
+
+A garden-path sentence is one where the initial interpretation leads the reader down the wrong path,
+requiring reanalysis when disambiguating information arrives.
+
+The sentence should:
+1. Be natural and grammatically correct in English
+2. Create initial misinterpretation that requires reanalysis
+3. Have a clear disambiguation point
+4. Be appropriate for linguistic research
+5. Be written entirely in English
+
+Generate only the sentence, no explanations or additional text.
+

@@ -35,9 +35,7 @@ if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
 """
 
-
-
-def generate_qa_pairs(sentence: str, language: str, ambiguity_type: str, 
+def generate_qa_pairs(sentence: str, language: str, 
                  num_questions: int = 5, loader=None) -> List[Dict]:
     """
     Generate question-answer pairs to probe semantic interpretation using Ollama.
@@ -45,7 +43,6 @@ def generate_qa_pairs(sentence: str, language: str, ambiguity_type: str,
     Args:
         sentence: The sentence to generate questions about
         language: Language of the sentence
-        ambiguity_type: Type of ambiguity in the sentence
         num_questions: Number of QA pairs to generate
         loader: ModelLoader instance (Ollama) for question generation
         
@@ -54,13 +51,11 @@ def generate_qa_pairs(sentence: str, language: str, ambiguity_type: str,
     """
     if loader is None:
         # Fallback: generate simple template questions
-        return _generate_template_questions(sentence, language, ambiguity_type, num_questions)
+        return _generate_template_questions(sentence, language, num_questions)
     
     prompt = f"""Generate {num_questions} question-answer pairs to probe semantic interpretation of this garden-path sentence in {language}:
 
 Sentence: "{sentence}"
-
-Ambiguity type: {ambiguity_type.replace('_', ' ').title()}
 
 For each question, provide:
 1. A question that tests whether the reader has correctly interpreted the sentence
@@ -105,33 +100,30 @@ Example format:
             raise ValueError("Invalid JSON format")
     except Exception as e:
         print(f"Error generating QA pairs with Ollama: {e}")
-        return _generate_template_questions(sentence, language, ambiguity_type, num_questions)
+        return _generate_template_questions(sentence, language, num_questions)
 
 
-def _generate_template_questions(sentence: str, language: str, ambiguity_type: str, 
+def _generate_template_questions(sentence: str, language: str, 
                                    num_questions: int) -> List[Dict]:
     """Fallback template-based question generation."""
     # Simple template questions (can be improved)
     questions = []
     
-    if ambiguity_type == "attachment_ambiguity":
-        questions.append({
-            "question": f"What is the main action in: {sentence}?",
-            "correct_answer": "To be determined from sentence",
-            "misinterpretation_answer": "Initial misinterpretation"
-        })
-    elif ambiguity_type == "relative_clause_ambiguity":
-        questions.append({
-            "question": f"Who or what does the relative clause modify in: {sentence}?",
-            "correct_answer": "To be determined from sentence",
-            "misinterpretation_answer": "Initial misinterpretation"
-        })
-    else:
-        questions.append({
-            "question": f"What is the meaning of: {sentence}?",
-            "correct_answer": "To be determined from sentence",
-            "misinterpretation_answer": "Initial misinterpretation"
-        })
+    questions.append({
+        "question": f"What is the main action in: {sentence}?",
+        "correct_answer": "To be determined from sentence",
+        "misinterpretation_answer": "Initial misinterpretation"
+    })
+    questions.append({
+        "question": f"Who or what is the subject in: {sentence}?",
+        "correct_answer": "To be determined from sentence",
+        "misinterpretation_answer": "Initial misinterpretation"
+    })
+    questions.append({
+        "question": f"What is the meaning of: {sentence}?",
+        "correct_answer": "To be determined from sentence",
+        "misinterpretation_answer": "Initial misinterpretation"
+    })
     
     # Repeat to reach num_questions
     while len(questions) < num_questions:
@@ -177,7 +169,7 @@ def probe_interpretation(loader, chunk_text: str, question: str,
         }
 
 
-def run_incremental_qa_analysis(sentence: str, language: str, ambiguity_type: str,
+def run_incremental_qa_analysis(sentence: str, language: str,
                                 loader, chunking_strategy, 
                                 num_qa_probes: int = 5) -> pd.DataFrame:
     """
@@ -186,7 +178,6 @@ def run_incremental_qa_analysis(sentence: str, language: str, ambiguity_type: st
     Args:
         sentence: Sentence to analyze
         language: Language of sentence
-        ambiguity_type: Type of ambiguity
         loader: ModelLoader instance (Ollama)
         chunking_strategy: Chunking strategy instance (syntactic units)
         num_qa_probes: Number of QA pairs to generate
@@ -195,7 +186,7 @@ def run_incremental_qa_analysis(sentence: str, language: str, ambiguity_type: st
         DataFrame with incremental analysis results
     """
     # Generate QA pairs using Ollama
-    qa_pairs = generate_qa_pairs(sentence, language, ambiguity_type, num_qa_probes, loader)
+    qa_pairs = generate_qa_pairs(sentence, language, num_qa_probes, loader)
     
     # Chunk the sentence using syntactic units
     # Use loader's tokenizer if available, otherwise use a fallback
@@ -269,10 +260,8 @@ def main(cfg: DictConfig):
         return
     
     # Load dataset
-    # TODO: Generate or add garden-path sentences for all 14 languages
-    # The dataset should contain columns: language, sentence, ambiguity_type, sentence_type
-    # For now, we assume the dataset exists. To generate it, run:
-    # python src/multilingual_experiments/dataset_generation.py
+    # Assumes dataset CSV exists with columns: language, sentence, sentence_type
+    # To generate the dataset, run: python src/multilingual_experiments/dataset_generation.py
     dataset_path = Path(hydra.utils.to_absolute_path(
         cfg.multilingual_p600.dataset.output_dir
     )) / "multilingual_gardenpath_dataset.csv"
@@ -280,8 +269,8 @@ def main(cfg: DictConfig):
     if not dataset_path.exists():
         raise FileNotFoundError(
             f"Dataset not found: {dataset_path}. "
-            "Please generate garden-path sentences first by running dataset_generation.py, "
-            "or manually create a CSV with columns: language, sentence, ambiguity_type, sentence_type"
+            "Please generate garden-path sentences first by running: "
+            "python src/multilingual_experiments/dataset_generation.py"
         )
     
     df = pd.read_csv(dataset_path)
@@ -334,7 +323,6 @@ def main(cfg: DictConfig):
                     results_df = run_incremental_qa_analysis(
                         sentence=row['sentence'],
                         language=row['language'],
-                        ambiguity_type=row['ambiguity_type'],
                         loader=loader,
                         chunking_strategy=chunk_strategy,
                         num_qa_probes=exp_cfg.num_qa_probes
@@ -344,7 +332,6 @@ def main(cfg: DictConfig):
                     results_df['model'] = model_name
                     results_df['sentence_id'] = idx
                     results_df['language'] = row['language']
-                    results_df['ambiguity_type'] = row['ambiguity_type']
                     
                     all_results.append(results_df)
                     

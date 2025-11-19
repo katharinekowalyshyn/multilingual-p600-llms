@@ -1,0 +1,12 @@
+Génère une phrase de contrôle non ambiguë en français qui correspond à cette phrase de jardin de sentiers :
+
+Phrase de jardin de sentiers : "{gardenpath_sentence}"
+
+La phrase de contrôle doit :
+1. Avoir la même signification et structure que la phrase de jardin de sentiers
+2. Être non ambiguë (sans effet de jardin de sentiers)
+3. Être grammaticalement correcte en français
+4. Utiliser un vocabulaire et une longueur similaires
+5. Résoudre clairement toute ambiguïté
+
+Génère uniquement la phrase de contrôle, sans explications ni texte supplémentaire.

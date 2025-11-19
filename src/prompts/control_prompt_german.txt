@@ -1,0 +1,14 @@
+Generiere einen eindeutigen Kontrollsatz auf Deutsch, der zu diesem Gartenpfad-Satz passt:
+
+Gartenpfad-Satz: "{gardenpath_sentence}"
+
+Der Kontrollsatz sollte:
+1. Die gleiche Bedeutung und Struktur wie der Gartenpfad-Satz haben
+2. Eindeutig sein (kein Gartenpfad-Effekt)
+3. Grammatikalisch korrekt auf Deutsch sein
+4. Ähnliches Vokabular und Länge verwenden
+5. Jede Ambiguität klar auflösen
+
+Generiere nur den Kontrollsatz, keine Erklärungen oder zusätzlichen Text.
+
+

@@ -1,0 +1,14 @@
+Gere uma frase de controle não ambígua em português que corresponda a esta frase de jardim de caminhos:
+
+Frase de jardim de caminhos: "{gardenpath_sentence}"
+
+A frase de controle deve:
+1. Ter o mesmo significado e estrutura da frase de jardim de caminhos
+2. Ser não ambígua (sem efeito de jardim de caminhos)
+3. Ser gramaticalmente correta em português
+4. Usar vocabulário e comprimento similares
+5. Resolver claramente qualquer ambiguidade
+
+Gere apenas a frase de controle, sem explicações ou texto adicional.
+
+

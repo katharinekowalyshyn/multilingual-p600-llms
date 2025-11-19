@@ -1,0 +1,15 @@
+Génère une phrase de jardin de sentiers en français.
+
+Une phrase de jardin de sentiers est une phrase où l'interprétation initiale mène le lecteur sur la mauvaise voie,
+nécessitant une réanalyse lorsque les informations de désambiguïsation arrivent.
+
+La phrase doit :
+1. Être naturelle et grammaticalement correcte en français
+2. Créer une mauvaise interprétation initiale qui nécessite une réanalyse
+3. Avoir un point de désambiguïsation clair
+4. Être appropriée pour la recherche linguistique
+5. Être écrite entièrement en français
+
+Génère uniquement la phrase, sans explications ni texte supplémentaire.
+
+

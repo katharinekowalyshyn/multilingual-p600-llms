@@ -1,0 +1,15 @@
+Genera una frase di giardino di sentieri in italiano.
+
+Una frase di giardino di sentieri è una frase in cui l'interpretazione iniziale porta il lettore sulla strada sbagliata,
+richiedendo una rianalisi quando arrivano le informazioni di disambiguazione.
+
+La frase deve:
+1. Essere naturale e grammaticalmente corretta in italiano
+2. Creare un'interpretazione errata iniziale che richieda una rianalisi
+3. Avere un punto di disambiguazione chiaro
+4. Essere appropriata per la ricerca linguistica
+5. Essere scritta interamente in italiano
+
+Genera solo la frase, senza spiegazioni o testo aggiuntivo.
+
+

@@ -36,66 +36,45 @@ from src.utils import save_dataframe_to_csv
 sns.set_style("whitegrid")
 
 
-def extract_attention_weights(model, tokenizer, sentence: str, 
+def extract_attention_weights(loader, sentence: str, 
                               chunking_strategy, layers_to_analyze: Optional[List[int]] = None) -> Dict:
     """
     Extract attention weights for a sentence incrementally.
     
+    NOTE: This is a placeholder implementation. Ollama API does not provide access
+    to attention weights. Full implementation requires local model loading with
+    TransformerLens or similar library that provides attention access.
+    
     Args:
-        model: Loaded model
-        tokenizer: Model tokenizer
+        loader: ModelLoader instance (Ollama)
         sentence: Sentence to analyze
         chunking_strategy: Chunking strategy instance
         layers_to_analyze: Specific layers to extract (None for all)
         
     Returns:
-        Dictionary with attention weights at each chunk
+        Dictionary with attention weights at each chunk (empty for Ollama)
     """
+    # Use loader's tokenizer for chunking
+    tokenizer = loader.tokenizer if loader.tokenizer else None
+    if tokenizer is None:
+        class SimpleTokenizer:
+            def encode(self, text, **kwargs):
+                return loader.tokenize(text, add_bos=False)
+        tokenizer = SimpleTokenizer()
+    
     chunks = chunking_strategy.chunk(sentence, tokenizer)
     attention_data = []
     
     for chunk_idx, (chunk_text, start_token, end_token) in enumerate(chunks):
-        # Tokenize chunk
-        tokens = tokenizer.encode(chunk_text, return_tensors="pt")
-        if hasattr(model, 'to'):
-            tokens = tokens.to(next(model.parameters()).device)
-        
-        # Extract attention if available
-        if hasattr(model, 'run_with_cache'):
-            _, cache = model.run_with_cache(tokens)
-            
-            # Get attention weights from cache
-            attention_weights = {}
-            for key in cache.keys():
-                if 'attn' in key.lower() or 'attention' in key.lower():
-                    # Extract layer number
-                    layer_num = None
-                    for part in key.split('.'):
-                        if part.isdigit():
-                            layer_num = int(part)
-                            break
-                    
-                    if layers_to_analyze is None or layer_num in layers_to_analyze:
-                        attn = cache[key]
-                        # Average across heads if multi-head
-                        if attn.dim() > 3:
-                            attn = attn.mean(dim=1)  # Average across heads
-                        attention_weights[key] = attn.cpu().numpy()
-            
-            attention_data.append({
-                "chunk_index": chunk_idx,
-                "chunk_text": chunk_text,
-                "attention_weights": attention_weights,
-                "num_layers": len(attention_weights)
-            })
-        else:
-            # Model doesn't support attention extraction
-            attention_data.append({
-                "chunk_index": chunk_idx,
-                "chunk_text": chunk_text,
-                "attention_weights": {},
-                "num_layers": 0
-            })
+        # Ollama API doesn't provide attention weights
+        # Would need local model with TransformerLens to extract attention
+        attention_data.append({
+            "chunk_index": chunk_idx,
+            "chunk_text": chunk_text,
+            "attention_weights": {},  # Empty - not available via Ollama
+            "num_layers": 0,
+            "note": "Attention weights require local model access, not available via Ollama API"
+        })
     
     return attention_data
 
@@ -195,12 +174,18 @@ def main(cfg: DictConfig):
         return
     
     # Load dataset
+    # Assumes dataset CSV exists with columns: language, sentence, sentence_type
+    # To generate the dataset, run: python src/multilingual_experiments/dataset_generation.py
     dataset_path = Path(hydra.utils.to_absolute_path(
         cfg.multilingual_p600.dataset.output_dir
     )) / "multilingual_gardenpath_dataset.csv"
     
     if not dataset_path.exists():
-        raise FileNotFoundError(f"Dataset not found: {dataset_path}. Run dataset generation first.")
+        raise FileNotFoundError(
+            f"Dataset not found: {dataset_path}. "
+            "Please generate garden-path sentences first by running: "
+            "python src/multilingual_experiments/dataset_generation.py"
+        )
     
     df = pd.read_csv(dataset_path)
     gardenpath_df = df[df['sentence_type'] == 'gardenpath']
@@ -232,8 +217,11 @@ def main(cfg: DictConfig):
         print(f"{'='*60}")
         
         try:
-            # Load model
-            model, tokenizer, loader = load_model_from_config(model_cfg)
+            # Load model (Ollama)
+            model_name_loaded, tokenizer, loader = load_model_from_config({
+                **model_cfg,
+                'ollama_base_url': cfg.multilingual_p600.get('ollama_base_url', 'http://localhost:11434')
+            })
             
             # Get chunking strategy
             chunk_strategy = get_chunking_strategy("syntactic", language='en')
@@ -244,8 +232,7 @@ def main(cfg: DictConfig):
                                desc=f"Processing {model_name}"):
                 try:
                     attention_data = extract_attention_weights(
-                        model=model,
-                        tokenizer=tokenizer,
+                        loader=loader,
                         sentence=row['sentence'],
                         chunking_strategy=chunk_strategy,
                         layers_to_analyze=layers_to_analyze
@@ -256,7 +243,6 @@ def main(cfg: DictConfig):
                     shift_df['model'] = model_name
                     shift_df['sentence_id'] = idx
                     shift_df['language'] = row['language']
-                    shift_df['ambiguity_type'] = row['ambiguity_type']
                     
                     all_results.append(shift_df)
                     

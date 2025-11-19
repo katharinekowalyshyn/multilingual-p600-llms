@@ -1,0 +1,15 @@
+Gere uma frase de jardim de caminhos em português.
+
+Uma frase de jardim de caminhos é aquela em que a interpretação inicial leva o leitor pelo caminho errado,
+exigindo reanálise quando as informações de desambiguação chegam.
+
+A frase deve:
+1. Ser natural e gramaticalmente correta em português
+2. Criar uma interpretação errônea inicial que exija reanálise
+3. Ter um ponto de desambiguação claro
+4. Ser apropriada para pesquisa linguística
+5. Estar escrita completamente em português
+
+Gere apenas a frase, sem explicações ou texto adicional.
+
+

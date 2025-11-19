@@ -1,0 +1,15 @@
+Generiere einen Gartenpfad-Satz auf Deutsch.
+
+Ein Gartenpfad-Satz ist ein Satz, bei dem die anfängliche Interpretation den Leser in die Irre führt
+und eine Neuanalyse erfordert, wenn die disambiguierende Information eintrifft.
+
+Der Satz sollte:
+1. Natürlich und grammatikalisch korrekt auf Deutsch sein
+2. Eine anfängliche Fehlinterpretation erzeugen, die eine Neuanalyse erfordert
+3. Einen klaren Disambiguierungspunkt haben
+4. Für sprachwissenschaftliche Forschung geeignet sein
+5. Vollständig auf Deutsch geschrieben sein
+
+Generiere nur den Satz, keine Erklärungen oder zusätzlichen Text.
+
+

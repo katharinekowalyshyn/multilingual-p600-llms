@@ -1,0 +1,15 @@
+Genera una oración de jardín de senderos en español.
+
+Una oración de jardín de senderos es aquella en la que la interpretación inicial lleva al lector por el camino equivocado,
+requiriendo reanálisis cuando llega la información desambiguadora.
+
+La oración debe:
+1. Ser natural y gramaticalmente correcta en español
+2. Crear una interpretación errónea inicial que requiera reanálisis
+3. Tener un punto de desambiguación claro
+4. Ser apropiada para investigación lingüística
+5. Estar escrita completamente en español
+
+Genera solo la oración, sin explicaciones ni texto adicional.
+
+

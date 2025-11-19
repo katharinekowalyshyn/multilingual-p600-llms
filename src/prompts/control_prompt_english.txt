@@ -1,0 +1,13 @@
+Generate an unambiguous control sentence in English that matches this garden-path sentence:
+
+Garden-path sentence: "{gardenpath_sentence}"
+
+The control sentence should:
+1. Have the same meaning and structure as the garden-path sentence
+2. Be unambiguous (no garden-path effect)
+3. Be grammatically correct in English
+4. Use similar vocabulary and length
+5. Resolve any ambiguity clearly
+
+Generate only the control sentence, no explanations or additional text.
+

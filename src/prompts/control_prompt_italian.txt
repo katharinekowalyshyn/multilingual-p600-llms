@@ -1,0 +1,14 @@
+Genera una frase di controllo non ambigua in italiano che corrisponda a questa frase di giardino di sentieri:
+
+Frase di giardino di sentieri: "{gardenpath_sentence}"
+
+La frase di controllo deve:
+1. Avere lo stesso significato e struttura della frase di giardino di sentieri
+2. Essere non ambigua (nessun effetto di giardino di sentieri)
+3. Essere grammaticalmente corretta in italiano
+4. Usare vocabolario e lunghezza simili
+5. Risolvere chiaramente qualsiasi ambiguità
+
+Genera solo la frase di controllo, senza spiegazioni o testo aggiuntivo.
+
+

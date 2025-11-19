@@ -19,7 +19,6 @@ except ImportError:
 
 
 class ChunkingStrategy:
-    """Base class for chunking strategies."""
     
     def chunk(self, text: str, tokenizer) -> List[Tuple[str, int, int]]:
         """

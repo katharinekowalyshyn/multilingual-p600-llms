@@ -1,0 +1,14 @@
+Genera una oración de control no ambigua en español que coincida con esta oración de jardín de senderos:
+
+Oración de jardín de senderos: "{gardenpath_sentence}"
+
+La oración de control debe:
+1. Tener el mismo significado y estructura que la oración de jardín de senderos
+2. Ser no ambigua (sin efecto de jardín de senderos)
+3. Ser gramaticalmente correcta en español
+4. Usar vocabulario y longitud similares
+5. Resolver cualquier ambigüedad claramente
+
+Genera solo la oración de control, sin explicaciones ni texto adicional.
+
+

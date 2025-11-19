@@ -31,60 +31,48 @@ from src.multilingual_experiments.chunking import get_chunking_strategy
 from src.utils import save_dataframe_to_csv
 
 
-def extract_parse_tree_manning_2020(model, tokenizer, sentence: str, 
+def extract_parse_tree_manning_2020(loader, sentence: str, 
                                      chunking_strategy) -> List[Dict]:
     """
     Extract incremental parse trees using Manning et al. (2020) method.
     
-    This method uses attention patterns and hidden states to infer
-    syntactic structure incrementally.
+    NOTE: This is a placeholder implementation. Full parse tree extraction requires
+    direct model access to attention weights, which is not available via Ollama API.
+    For full implementation, would need local model loading with TransformerLens.
     
     Args:
-        model: Loaded model
-        tokenizer: Model tokenizer
+        loader: ModelLoader instance (Ollama)
         sentence: Sentence to parse
         chunking_strategy: Chunking strategy instance
         
     Returns:
         List of parse tree representations at each chunk
     """
-    # TODO: Implement Manning et al. (2020) parse tree extraction
-    # This would involve:
-    # 1. Extracting attention weights at each chunk
-    # 2. Using attention patterns to infer dependency relations
-    # 3. Building incremental parse trees
-    # 4. Comparing trees across chunks to detect reanalysis
+    # TODO: Full implementation requires local model access for attention extraction
+    # Current Ollama API doesn't provide attention weights
+    # Would need: TransformerLens model with run_with_cache() for attention patterns
+    
+    # Use loader's tokenizer for chunking
+    tokenizer = loader.tokenizer if loader.tokenizer else None
+    if tokenizer is None:
+        class SimpleTokenizer:
+            def encode(self, text, **kwargs):
+                return loader.tokenize(text, add_bos=False)
+        tokenizer = SimpleTokenizer()
     
     chunks = chunking_strategy.chunk(sentence, tokenizer)
     parse_trees = []
     
     for chunk_idx, (chunk_text, start_token, end_token) in enumerate(chunks):
-        # Tokenize chunk
-        tokens = tokenizer.encode(chunk_text, return_tensors="pt")
-        if hasattr(model, 'to'):
-            tokens = tokens.to(next(model.parameters()).device)
-        
-        # Extract attention (if available)
-        if hasattr(model, 'run_with_cache'):
-            _, cache = model.run_with_cache(tokens)
-            # Use attention patterns to infer structure
-            # This is a placeholder - actual implementation would analyze
-            # attention heads to identify syntactic dependencies
-            parse_tree = {
-                "chunk_index": chunk_idx,
-                "chunk_text": chunk_text,
-                "structure": "placeholder",  # Would contain actual parse tree
-                "dependencies": [],  # Would contain dependency relations
-                "reanalysis_detected": chunk_idx > 0  # Placeholder
-            }
-        else:
-            parse_tree = {
-                "chunk_index": chunk_idx,
-                "chunk_text": chunk_text,
-                "structure": "not_available",
-                "dependencies": [],
-                "reanalysis_detected": False
-            }
+        # Placeholder: Ollama doesn't provide attention weights
+        # Would need local model to extract attention patterns for parse trees
+        parse_tree = {
+            "chunk_index": chunk_idx,
+            "chunk_text": chunk_text,
+            "structure": "not_available_via_ollama",  # Requires local model access
+            "dependencies": [],
+            "reanalysis_detected": False
+        }
         
         parse_trees.append(parse_tree)
     
@@ -104,12 +92,18 @@ def main(cfg: DictConfig):
         return
     
     # Load dataset
+    # Assumes dataset CSV exists with columns: language, sentence, sentence_type
+    # To generate the dataset, run: python src/multilingual_experiments/dataset_generation.py
     dataset_path = Path(hydra.utils.to_absolute_path(
         cfg.multilingual_p600.dataset.output_dir
     )) / "multilingual_gardenpath_dataset.csv"
     
     if not dataset_path.exists():
-        raise FileNotFoundError(f"Dataset not found: {dataset_path}. Run dataset generation first.")
+        raise FileNotFoundError(
+            f"Dataset not found: {dataset_path}. "
+            "Please generate garden-path sentences first by running: "
+            "python src/multilingual_experiments/dataset_generation.py"
+        )
     
     df = pd.read_csv(dataset_path)
     gardenpath_df = df[df['sentence_type'] == 'gardenpath']
@@ -136,8 +130,11 @@ def main(cfg: DictConfig):
         print(f"{'='*60}")
         
         try:
-            # Load model
-            model, tokenizer, loader = load_model_from_config(model_cfg)
+            # Load model (Ollama)
+            model_name_loaded, tokenizer, loader = load_model_from_config({
+                **model_cfg,
+                'ollama_base_url': cfg.multilingual_p600.get('ollama_base_url', 'http://localhost:11434')
+            })
             
             # Get chunking strategy (syntactic for parse trees)
             chunk_strategy = get_chunking_strategy("syntactic", language='en')
@@ -148,8 +145,7 @@ def main(cfg: DictConfig):
                                desc=f"Processing {model_name}"):
                 try:
                     parse_trees = extract_parse_tree_manning_2020(
-                        model=model,
-                        tokenizer=tokenizer,
+                        loader=loader,
                         sentence=row['sentence'],
                         chunking_strategy=chunk_strategy
                     )
@@ -159,7 +155,6 @@ def main(cfg: DictConfig):
                         parse_tree['model'] = model_name
                         parse_tree['sentence_id'] = idx
                         parse_tree['language'] = row['language']
-                        parse_tree['ambiguity_type'] = row['ambiguity_type']
                         all_results.append(parse_tree)
                     
                 except Exception as e:
